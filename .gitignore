@@ -1,0 +1,101 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+
+# Node.js specific
+node_modules/
+dist/
+.cache/
+.nuxt/
+.nitro/
+.output/
+
+# Python specific
+*.pyc
+__pycache__/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# VS Code related
+.vscode/
+.history/
+
+# Flutter/Dart/Pub related
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages/
+/build/
+
+# Android Studio related
+/android/app/debug/
+/android/app/profile/
+/android/app/release/
+
+# Maven specific
+target/
+dist/
+
+# JetBrains IDEs
+.idea/
+
+# Unit test reports
+TEST*.xml
+
+# MacOS specific
+.DS_Store
+
+# Windows specific
+Thumbs.db
+
+# Laravel specific
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+yarn-error.log
+.env.local
+.env.*.local
+.phpstorm.meta.php
+/public/hot/
+/public/storage/
+/public/css/
+/public/js/
+/public/mix-manifest.json/
+/public/web.config/
+/storage/*.key
+/vendor/
+.env.test
+.phpunit
+.idea/
+_ide_helper.php
+_ide_helper_models.php
+_ide_helper_routes.php
+_ide_helper_services.php
+*.env*
+!*.env.example
