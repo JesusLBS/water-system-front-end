@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "postinstall": "husky",
+    "manage:module": "node scripts/manageModule.cjs create",
+    "manage:module:rollback": "node scripts/manageModule.cjs rollback",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
