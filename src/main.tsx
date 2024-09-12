@@ -1,10 +1,37 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
+import React, { useState } from 'react';
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import App from './App';
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
+const AppWrapper: React.FC = () => {
+    const [darkMode, setDarkMode] = useState(true);
+
+    const toggleTheme = () => {
+        setDarkMode((prevMode) => !prevMode);
+    };
+
+    const theme = createTheme({
+        palette: {
+            mode: darkMode ? 'dark' : 'light',
+        },
+    });
+
+    return (
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <App toggleTheme={toggleTheme} darkMode={darkMode} />
+        </ThemeProvider>
+    );
+};
+
+const rootElement = document.getElementById('root');
+if (rootElement) {
+    const root = createRoot(rootElement);
+    root.render(
+        <StrictMode>
+            <AppWrapper />
+        </StrictMode>
+    );
+}
