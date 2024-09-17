@@ -6,7 +6,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import App from './App';
 
 const AppWrapper: React.FC = () => {
-    const [darkMode, setDarkMode] = useState(true);
+    const [darkMode, setDarkMode] = useState(false);
 
     const toggleTheme = () => {
         setDarkMode((prevMode) => !prevMode);

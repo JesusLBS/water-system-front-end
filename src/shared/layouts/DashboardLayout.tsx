@@ -122,14 +122,14 @@ interface MenuItem {
 const menuItems: MenuItem[] = [
     {
         name: 'Home',
-        link: `home`,
+        link: `/dashboard/home`,
         icon: <HomeIcon />
     },
     {
         name: 'Users',
-        link: `users`,
+        link: `/private/users`,
         icon: <PeopleIcon />
-    },
+    }
 ];
 
 
@@ -138,7 +138,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, toggleTheme
     const [open, setOpen] = React.useState(false);
 
     return (
-        <Box sx={{ display: 'flex' }}>
+        <Box sx={{
+            display: 'flex',
+            width: '100%',
+            minHeight: '100vh',
+            alignItems: 'start',
+        }}>
             <CssBaseline />
             <AppBar position="fixed" open={open}>
                 <Toolbar>
@@ -248,11 +253,16 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, toggleTheme
                 </List>
                 <Divider />
             </Drawer>
-            <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+            <Box component="main" sx={{
+                flexGrow: 1, p: 3,
+                width: '100%',
+                overflowX: 'auto'
+            }}>
                 <DrawerHeader />
                 {children}
             </Box>
         </Box>
     );
 }
+
 export default DashboardLayout;
