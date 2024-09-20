@@ -1,17 +1,20 @@
-import * as React from 'react';
-import IconButton from '@mui/material/IconButton';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import DeactivateIcon from '@mui/icons-material/Block';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import ActionsDialog from './ActionsDialog'; // Importa el componente de diálogo de confirmación
+import React from 'react';
+import {
+    IconButton,
+    Menu,
+    MenuItem,
+    ListItemIcon,
+    ListItemText
+} from '@mui/material';
+import {
+    MoreVert as MoreVertIcon,
+    Block as DeactivateIcon,
+    Delete as DeleteIcon,
+    Edit as EditIcon,
+    Visibility as VisibilityIcon
+} from '@mui/icons-material';
+import ActionsDialog from './ActionsDialog';
 import FormDialog from './FomDialog';
-
 
 interface MenuListButtonProps {
   item: { name: string; email: string; role: string };
@@ -56,39 +59,69 @@ const MenuListButton: React.FC<MenuListButtonProps> = ({ item }) => {
 
   return (
     <React.Fragment>
-      <IconButton onClick={handleMenuOpen}>
+      <IconButton
+        onClick={(event) => {
+          event.stopPropagation(); // Detiene la propagación para que no dispare el onClick de la fila
+          handleMenuOpen(event);
+        }}
+      >
         <MoreVertIcon />
       </IconButton>
+
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
       >
-        <MenuItem onClick={() => handleActionClick('Deactivate')}>
+        <MenuItem
+          onClick={(event) => {
+            event.stopPropagation();
+            handleActionClick('Deactivate');
+          }}
+        >
           <ListItemIcon>
             <DeactivateIcon />
           </ListItemIcon>
           <ListItemText>Deactivate</ListItemText>
         </MenuItem>
-        <MenuItem onClick={() => handleActionClick('Delete')}>
+
+        <MenuItem
+          onClick={(event) => {
+            event.stopPropagation();
+            handleActionClick('Delete');
+          }}
+        >
           <ListItemIcon>
             <DeleteIcon />
           </ListItemIcon>
           <ListItemText>Delete</ListItemText>
         </MenuItem>
-        <MenuItem onClick={() => handleActionClick('Edit')}>
+
+        <MenuItem
+          onClick={(event) => {
+            event.stopPropagation();
+            handleActionClick('Edit');
+          }}
+        >
           <ListItemIcon>
             <EditIcon />
           </ListItemIcon>
           <ListItemText>Edit</ListItemText>
         </MenuItem>
-        <MenuItem onClick={() => handleActionClick('Show')}>
+
+        <MenuItem
+          onClick={(event) => {
+            event.stopPropagation();
+            handleActionClick('Show');
+          }}
+        >
           <ListItemIcon>
             <VisibilityIcon />
           </ListItemIcon>
           <ListItemText>Show</ListItemText>
         </MenuItem>
       </Menu>
+
 
       {action && (
         <ActionsDialog

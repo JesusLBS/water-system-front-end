@@ -16,11 +16,10 @@ import {
 } from '@mui/material';
 import { roles } from '../mockData/mockData';
 
-// Esquema de validación
 const validationSchema = Yup.object({
     name: Yup.string().required('Name is required'),
     email: Yup.string().email('Please enter a valid email').required('Email is required'),
-    roleId: Yup.string().required('Role is required'), // validación para roleId
+    roleId: Yup.string().required('Role is required'),
     active: Yup.boolean().required('Active status is required'),
 });
 
@@ -32,18 +31,19 @@ interface FormDialogProps {
 }
 
 const FormDialog: React.FC<FormDialogProps> = ({ openDialog, onClose, isEdit, item }) => {
-    console.log(JSON.stringify(item, null, 2))
+
+    if (isEdit) console.log(JSON.stringify(item, null, 2))
     const initialValues = isEdit
         ? {
             name: 'John Doe',
             email: 'john.doe@example.com',
-            roleId: '1', // Valor inicial vacío
+            roleId: '1',
             active: true,
         }
         : {
             name: 'any',
             email: 'any@example.com',
-            roleId: '', // Valor inicial vacío
+            roleId: '',
             active: false,
         };
 
@@ -82,8 +82,6 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, onClose, isEdit, it
                                 error={touched.email && Boolean(errors.email)}
                                 helperText={touched.email && errors.email}
                             />
-
-                            {/* Select field for Role */}
                             <Field
                                 as={TextField}
                                 name="roleId"
@@ -103,8 +101,6 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, onClose, isEdit, it
                                     </MenuItem>
                                 ))}
                             </Field>
-
-                            {/* Radio button for Active/Inactive */}
                             <FormLabel component="legend">Status</FormLabel>
                             <RadioGroup
                                 name="active"

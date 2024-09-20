@@ -1,10 +1,21 @@
-import * as React from 'react';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import Button from '@mui/material/Button';
+import React from 'react';
+import {
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    Button,
+    Typography,
+} from '@mui/material';
+
+import {
+    Warning as WarningIcon,
+    Delete as DeleteIcon,
+    Cancel as CancelIcon,
+    CheckCircle as CheckCircleIcon
+} from '@mui/icons-material';
+
 
 interface ActionsDialogProps {
     open: boolean;
@@ -14,31 +25,40 @@ interface ActionsDialogProps {
 }
 
 const ActionsDialog: React.FC<ActionsDialogProps> = ({ open, onClose, action, item }) => {
+    const isDelete = action === 'Delete';
+
     return (
         <Dialog open={open} onClose={onClose} aria-labelledby="action-dialog-title">
-            <DialogTitle id="action-dialog-title">
-                {action === 'Delete' ? 'Eliminación de usuario' : 'Desactivación de usuario'}
+            <DialogTitle id="action-dialog-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <WarningIcon color="error" />
+                {isDelete ? 'Eliminación de usuario' : 'Desactivación de usuario'}
             </DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    {`¿Está seguro de ${action === 'Delete' ? 'eliminar' : 'desactivar'} al siguiente usuario?`}
+                    {`¿Está seguro de ${isDelete ? 'eliminar' : 'desactivar'} al siguiente usuario?`}
                 </DialogContentText>
-                <DialogContentText>
+                <Typography variant="body2" style={{ marginTop: '10px' }}>
                     <strong>Nombre:</strong> {item.name}
-                </DialogContentText>
-                <DialogContentText>
+                </Typography>
+                <Typography variant="body2">
                     <strong>Rol:</strong> {item.role}
-                </DialogContentText>
-                <DialogContentText>
+                </Typography>
+                <Typography variant="body2">
                     <strong>Email:</strong> {item.email}
-                </DialogContentText>
+                </Typography>
             </DialogContent>
-            <DialogActions>
-                <Button onClick={onClose} color="primary">
+            <DialogActions
+                sx={{
+                    flexDirection: {
+                        xs: 'column',
+                        sm: 'row',
+                    },
+                }}>
+                <Button onClick={onClose} color="primary" startIcon={<CancelIcon />}>
                     Cancel
                 </Button>
-                <Button onClick={onClose} color="secondary" autoFocus>
-                    Yes, Confirmar
+                <Button onClick={onClose} color="secondary" startIcon={isDelete ? <DeleteIcon /> : <CheckCircleIcon />} autoFocus>
+                    {isDelete ? 'Eliminar' : 'Desactivar'}
                 </Button>
             </DialogActions>
         </Dialog>

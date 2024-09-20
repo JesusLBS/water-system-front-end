@@ -1,34 +1,42 @@
-import * as React from 'react';
-import { alpha } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
-import TableSortLabel from '@mui/material/TableSortLabel';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
-import Checkbox from '@mui/material/Checkbox';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
-import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterList';
+import React from 'react';
+import {
+    alpha,
+    Box,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TablePagination,
+    TableRow,
+    TableSortLabel,
+    Toolbar,
+    Typography,
+    Paper,
+    Checkbox,
+    IconButton,
+    Tooltip,
+    FormControlLabel,
+    Switch,
+    Autocomplete,
+    TextField,
+    Button,
+    Chip,
+    Divider,
+    SvgIcon,
+} from '@mui/material';
+import {
+    Delete as DeleteIcon,
+    FilterList as FilterListIcon,
+    Add as AddIcon,
+} from '@mui/icons-material';
 import { visuallyHidden } from '@mui/utils';
 import { headCells, rows } from '../mockData/userMockData';
 import { Data } from '../interfaces/Data';
-import Autocomplete from '@mui/material/Autocomplete';
-import TextField from '@mui/material/TextField';
-import { Button, Divider, SvgIcon } from '@mui/material';
 import FormDialog from './FomDialog';
 import MenuListButton from './MenuListButton';
-import './TableStyle.css';
-import AddIcon from '@mui/icons-material/Add';
+
+
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
     if (b[orderBy] < a[orderBy]) {
         return -1;
@@ -71,8 +79,11 @@ function EnhancedTableHead(props: EnhancedTableProps) {
         };
 
     return (
-        <TableHead>
-            <TableRow>
+        <TableHead
+            sx={{
+                fontWeight: 'bold',
+            }}>
+            <TableRow sx={{}}>
                 <TableCell padding="checkbox">
                     <Checkbox
                         color="primary"
@@ -240,8 +251,7 @@ const UsersTable: React.FC = () => {
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows =
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-
-    // Filtro de búsqueda para todas las columnas relevantes
+    // Search filter for all relevant columns
     const filteredRows = filterValue
         ? rows
             .filter((row) =>
@@ -366,7 +376,6 @@ const UsersTable: React.FC = () => {
 
                             ) : (
                                 visibleRows.map((row, index) => {
-                                    //console.log('table', index)
                                     const isItemSelected = selected.includes(row.id);
                                     const labelId = `enhanced-table-checkbox-${index}`;
                                     return (
@@ -389,46 +398,27 @@ const UsersTable: React.FC = () => {
                                                     }}
                                                 />
                                             </TableCell>
+
                                             {headCells.map((header) => {
-                                                if (header.id === 'actions') {
-                                                    return (
-                                                        <TableCell align="center" key={header.id}>
-                                                            <MenuListButton
-                                                                item={row}
-                                                            />
-                                                        </TableCell>
-                                                    );
-                                                }
-                                                if (header.id === 'deletedAt') {
-                                                    return (
-                                                        <TableCell align="center" key={header.id}>
-                                                            {row[header.id] ? 'Inactive' : 'Active'}
-                                                        </TableCell>
-                                                    );
-                                                }
-                                                if (header.id === 'name') {
-                                                    return (
-                                                        <TableCell
-                                                            component="th"
-                                                            id={labelId}
-                                                            scope="row"
-                                                            padding="none"
-                                                            key={header.id}
-                                                        >
-                                                            {row.name}
-                                                        </TableCell>
-                                                    );
-                                                } else {
+                                                if (header.id !== 'actions') {
                                                     return (
                                                         <TableCell align="right" key={header.id}>
-                                                            {row[header.id]}
+                                                            {header.id === 'deletedAt'
+                                                                ? row[header.id] ?
+                                                                    <Chip label="Inactive" color="default" variant="outlined" /> : <Chip label="Active" color="success" />
+                                                                : row[header.id]}
                                                         </TableCell>
                                                     );
                                                 }
+                                                return null;
                                             })}
+                                            <TableCell align="center">
+                                                <MenuListButton item={row} />
+                                            </TableCell>
                                         </TableRow>
                                     );
                                 })
+
                             )}
                             {emptyRows > 0 && (
                                 <TableRow
