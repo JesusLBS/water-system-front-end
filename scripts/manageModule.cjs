@@ -29,14 +29,15 @@ function deleteFolderRecursive(directoryPath) {
 // Determine if the action is to create or delete
 const action = process.argv[2];
 const moduleName = process.argv[3];
+const folderPath = process.argv[4] || ''; // Ruta adicional opcional
 
 if (!moduleName) {
   console.error("Please provide the module name. Example: 'yarn manage:module auth'");
   process.exit(1);
 }
 
-// Base path for the modules
-const basePath = path.join(__dirname, '../src/modules/', moduleName);
+// Base path for the modules, allowing for a custom folder path
+const basePath = path.join(__dirname, '../src/modules', folderPath, moduleName);
 
 // Module structure for creation
 const folders = ['components', 'pages', 'services', 'routes'];
