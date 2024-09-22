@@ -18,6 +18,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import HomeIcon from '@mui/icons-material/Home';
 import PeopleIcon from '@mui/icons-material/People';
+import GroupsIcon from '@mui/icons-material/Groups';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import { Link } from 'react-router-dom';
@@ -129,7 +130,12 @@ const menuItems: MenuItem[] = [
         name: 'Users',
         link: `/private/users`,
         icon: <PeopleIcon />
-    }
+    },
+    {
+        name: 'Socios',
+        link: `/private/socios`,
+        icon: <GroupsIcon />
+    },
 ];
 
 

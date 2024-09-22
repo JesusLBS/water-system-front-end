@@ -83,7 +83,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             sx={{
                 fontWeight: 'bold',
             }}>
-            <TableRow sx={{}}>
+            <TableRow>
                 <TableCell padding="checkbox">
                     <Checkbox
                         color="primary"
@@ -195,7 +195,7 @@ const UsersTable: React.FC = () => {
     };
 
     const handleRequestSort = (
-        event: React.MouseEvent<unknown>,
+        _: React.MouseEvent<unknown>,
         property: keyof Data,
     ) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -235,7 +235,7 @@ const UsersTable: React.FC = () => {
         setSelected(newSelected);
     };
 
-    const handleChangePage = (event: unknown, newPage: number) => {
+    const handleChangePage = (_: unknown, newPage: number) => {
         setPage(newPage);
     };
 
@@ -261,7 +261,7 @@ const UsersTable: React.FC = () => {
             )
         : rows;
 
-    const handleFilterChange = (event: any, value: string | null) => {
+    const handleFilterChange = (_: any, value: string | null) => {
         setFilterValue(value);
     };
 
