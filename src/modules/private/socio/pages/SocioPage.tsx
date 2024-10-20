@@ -1,11 +1,12 @@
 import React from 'react';
+import SocioTable from '../components/SocioTable';
 
 const SocioPage: React.FC = () => {
 
     return (
         <>
             <div >
-                Socios
+                <SocioTable />
             </div>
         </>
     );
