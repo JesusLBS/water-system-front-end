@@ -5,7 +5,6 @@ import GoogleIcon from '@mui/icons-material/Google';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 
-// Esquema de validación con Yup
 const validationSchema = Yup.object({
     email: Yup.string().email('Please enter a valid email').required('Required'),
     password: Yup.string().min(6, 'Password must be at least 6 characters long').required('Required'),
@@ -24,7 +23,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
 
     return (
         <Formik
-            initialValues={{ email: 'chichohdzjesus@gmail.com', password: '123456' }}
+            initialValues={{ email: 'chichohdzjesus@gmail.com', password: '12345678' }}
             validationSchema={validationSchema}
             onSubmit={(values) => {
                 onSubmit(values);
