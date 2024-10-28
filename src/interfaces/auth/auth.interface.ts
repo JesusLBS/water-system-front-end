@@ -8,3 +8,9 @@ export interface Root {
 export interface Data {
     token: string
 }
+
+export interface AuthState {
+    isAuthenticated: boolean;
+    token: string | null;
+    userId: string | null;
+}
