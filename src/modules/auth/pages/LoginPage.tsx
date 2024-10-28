@@ -3,22 +3,25 @@ import LoginForm from '../components/LoginForm';
 import AuthLayout from '../../../shared/layouts/AuthLayout';
 import FirebaseService from '../../../shared/services/firebase/firebaseService';
 import AuthService from '../services/authService';
-import { useNavigate } from "react-router-dom";
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { showErrorToast, showSuccessToast } from '../../../utils/toastNotifications';
+import { setAuth } from '../../../redux/auth/authSlice';
 
 interface LoginPageProps {
     toggleTheme: () => void;
     darkMode: boolean;
 }
+
 const firebaseService = new FirebaseService();
 const authService = new AuthService();
 
 const LoginPage: React.FC<LoginPageProps> = ({ toggleTheme, darkMode }) => {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const handleLogin = async (credentials: { email: string; password: string }) => {
         try {
-
             const user = await firebaseService.signIn(credentials);
             const uid: string = user?.uid || '';
             if (!uid) {
@@ -31,7 +34,13 @@ const LoginPage: React.FC<LoginPageProps> = ({ toggleTheme, darkMode }) => {
                 showErrorToast('Error al iniciar sesión. Verifica tus credenciales.');
                 return;
             }
-            localStorage.setItem('x-token', response.data.token);
+
+            const token = response.data.token;
+            localStorage.setItem('x-token', token);
+
+            // Dispatch Redux action to update the global auth state
+            dispatch(setAuth({ isAuthenticated: true, token, userId: uid }));
+
             showSuccessToast('¡Inicio de sesión exitoso!');
             navigate("/dashboard/home");
         } catch (error) {

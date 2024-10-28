@@ -3,6 +3,8 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import { Provider } from 'react-redux';
+import store from './redux/store';
 import App from './App';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -20,10 +22,12 @@ const AppWrapper: React.FC = () => {
     });
 
     return (
-        <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <App toggleTheme={toggleTheme} darkMode={darkMode} />
-        </ThemeProvider>
+        <Provider store={store}>
+            <ThemeProvider theme={theme}>
+                <CssBaseline />
+                <App toggleTheme={toggleTheme} darkMode={darkMode} />
+            </ThemeProvider>
+        </Provider>
     );
 };
 

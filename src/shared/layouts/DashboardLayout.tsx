@@ -22,6 +22,12 @@ import GroupsIcon from '@mui/icons-material/Groups';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import { Link } from 'react-router-dom';
+import Avatar from '@mui/material/Avatar';
+import { Menu, MenuItem, Tooltip } from '@mui/material';
+import LanguageIcon from '@mui/icons-material/Language';
+import { logout } from '../../redux/auth/authSlice';
+import { useDispatch } from 'react-redux';
+import { showSuccessToast } from '../../utils/toastNotifications';
 
 const drawerWidth = 240;
 
@@ -138,10 +144,60 @@ const menuItems: MenuItem[] = [
     },
 ];
 
+const settings = ['Profile', 'Account', 'Logout'];
+
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, toggleTheme, darkMode }) => {
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
+    const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+
+    const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorElUser(event.currentTarget);
+    };
+    const handleCloseUserMenu = () => {
+        setAnchorElUser(null);
+    };
+    const [anchorElLanguage, setAnchorElLanguage] = React.useState(null);
+
+    const handleOpenLanguageMenu = (event: any) => {
+        setAnchorElLanguage(event.currentTarget);
+    };
+
+    const handleCloseLanguageMenu = () => {
+        setAnchorElLanguage(null);
+    };
+
+    const handleLanguageChange = (lang: any) => {
+        // Lógica para cambiar el idioma
+        console.log(`Idioma cambiado a: ${lang}`);
+        setAnchorElLanguage(null);
+    };
+
+    // Functions for each menu item
+    const handleProfileClick = () => {
+        console.log("Profile clicked");
+        // Logic for profile action
+    };
+
+    const handleAccountClick = () => {
+        console.log("Account clicked");
+        // Logic for account action
+    };
+    const dispatch = useDispatch();
+    const handleLogoutClick = () => {
+        console.log("Logout clicked");
+        // Logic for logout action
+        dispatch(logout());
+        showSuccessToast('¡Cierre de sesión exitoso!');
+    };
+
+    // Object mapping settings to their respective handlers
+    const settingHandlers: any = {
+        Profile: handleProfileClick,
+        Account: handleAccountClick,
+        Logout: handleLogoutClick,
+    };
 
     return (
         <Box sx={{
@@ -152,51 +208,128 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, toggleTheme
         }}>
             <CssBaseline />
             <AppBar position="fixed" open={open}>
-                <Toolbar>
-                    <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={() => setOpen(!open)}
-                        edge="start"
-                        sx={[
-                            {
-                                marginRight: 5,
-                            },
-                            open && { display: 'none' },
-                        ]}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        component="div"
-                        sx={{
-                            mt: 2,
-                            mb: 2,
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            '& .full-text': {
-                                display: { xs: 'none', sm: 'flex' },
-                            },
-                            '& .short-text': {
-                                display: { xs: 'flex', sm: 'none' },
-                            },
-                        }}
-                    >
-                        <span className="full-text">Water System - Front End</span>
-                        <span className="short-text">WSF</span>
-                    </Typography>
+                <Toolbar sx={{ justifyContent: 'space-between' }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <IconButton
+                            color="inherit"
+                            aria-label="open drawer"
+                            onClick={() => setOpen(!open)}
+                            edge="start"
+                            sx={[
+                                {
+                                    marginRight: 1,
+                                },
+                                open && { display: 'none' },
+                            ]}
+                        >
+                            <MenuIcon />
+                        </IconButton>
 
-                    <IconButton
-                        onClick={toggleTheme}
-                        sx={{ position: 'fixed', top: 8, right: 16 }}
-                    >
-                        {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
-                    </IconButton>
+                        <Typography
+                            variant="h6"
+                            noWrap
+                            component="div"
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                '& .full-text': {
+                                    display: { xs: 'none', sm: 'flex' },
+                                },
+                                '& .short-text': {
+                                    display: { xs: 'flex', sm: 'none' },
+                                },
+                            }}
+                        >
+                            <span className="full-text">Water System - Front End</span>
+                            <span className="short-text">WSF</span>
+                        </Typography>
+                    </Box>
+
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        {/* Icono de Cambio de Modo */}
+                        <IconButton
+                            size="large"
+                            onClick={toggleTheme}
+                            sx={{
+                                ml: 2,
+                                mr: 1,
+                            }}
+                        >
+                            {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+                        </IconButton>
+
+                        {/* Icono de Cambio de lenguaje */}
+                        <Tooltip title="Change Language">
+                            <IconButton
+                                size="large"
+                                onClick={handleOpenLanguageMenu}
+                            >
+                                <LanguageIcon />
+                            </IconButton>
+                        </Tooltip>
+                        <Menu
+                            anchorEl={anchorElLanguage}
+                            open={Boolean(anchorElLanguage)}
+                            onClose={handleCloseLanguageMenu}
+                            sx={{ mt: '35px' }}
+                        >
+                            <MenuItem onClick={() => handleLanguageChange('es')}>Español</MenuItem>
+                            <MenuItem onClick={() => handleLanguageChange('en')}>English</MenuItem>
+                        </Menu>
+
+                        {/* Avatar y Nombre de Usuario */}
+                        <Tooltip title="Open settings">
+                            <IconButton
+                                onClick={handleOpenUserMenu}
+                                sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <Avatar
+                                    alt="User Avatar"
+                                    src="/static/images/avatar/2.jpg"
+                                    sx={{ width: 32, height: 32 }}
+                                />
+                                <Typography
+                                    variant="h6"
+                                    noWrap
+                                    component="div"
+                                    sx={{
+                                        ml: 1,
+                                        display: { xs: 'none', sm: 'flex' },
+                                    }}
+                                >
+                                    User Name
+                                </Typography>
+                            </IconButton>
+                        </Tooltip>
+                        <Menu
+                            sx={{ mt: '45px' }}
+                            id="menu-appbar"
+                            anchorEl={anchorElUser}
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            open={Boolean(anchorElUser)}
+                            onClose={handleCloseUserMenu}
+                        >
+                            {settings.map((setting) => (
+                                <MenuItem key={setting} onClick={() => { settingHandlers[setting](); handleCloseUserMenu(); }}>
+                                    <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
+                                </MenuItem>
+                            ))}
+                        </Menu>
+                    </Box>
                 </Toolbar>
             </AppBar>
+
             <Drawer variant="permanent" open={open}>
                 <DrawerHeader>
                     <IconButton onClick={() => setOpen(!open)}>
