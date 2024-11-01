@@ -16,7 +16,7 @@ interface LoginFormProps {
 
 const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
     const [showPassword, setShowPassword] = useState(false);
-
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword);
     };
@@ -26,6 +26,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
             initialValues={{ email: 'chichohdzjesus@gmail.com', password: '12345678' }}
             validationSchema={validationSchema}
             onSubmit={(values) => {
+                setIsSubmitting(true);
                 onSubmit(values);
             }}
         >
@@ -35,7 +36,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
                         <Field
                             as={TextField}
                             margin="normal"
-                            required
                             fullWidth
                             id="email"
                             label="Email Address"
@@ -57,7 +57,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
                         <Field
                             as={TextField}
                             margin="normal"
-                            required
                             fullWidth
                             name="password"
                             label="Password"
@@ -86,6 +85,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
                             type="submit"
                             fullWidth
                             variant="contained"
+                            disabled={isSubmitting}
                             sx={{ mt: 3, mb: 2 }}
                         >
                             Sign In
