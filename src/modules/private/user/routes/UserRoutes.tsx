@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import DashboardLayout from '../../../shared/layouts/DashboardLayout';
 import UserPage from '../pages/UserPage';
+import DashboardLayout from '../../../../shared/layouts/DashboardLayout';
 
 interface UserRoutesProps {
   toggleTheme: () => void;
