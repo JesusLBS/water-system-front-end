@@ -377,25 +377,25 @@ const UsersTable: React.FC = () => {
 
                             ) : (
                                 visibleRows.map((row, index) => {
-                                    //const isItemSelected = selected.includes(row.id);
-                                    //const labelId = `enhanced-table-checkbox-${index}`;
+                                    const isItemSelected = selected.includes(row.id);
+                                    const labelId = `enhanced-table-checkbox-${index}`;
                                     return (
                                         <TableRow
                                             hover
-                                            //onClick={(event) => handleClick(event, row.id)}
+                                            onClick={(event) => handleClick(event, row.id)}
                                             role="checkbox"
-                                            //aria-checked={isItemSelected}
+                                            aria-checked={isItemSelected}
                                             tabIndex={-1}
                                             key={row.uid}
-                                            //selected={isItemSelected}
+                                            selected={isItemSelected}
                                             sx={{ cursor: 'pointer' }}
                                         >
                                             <TableCell padding="checkbox">
                                                 <Checkbox
                                                     color="primary"
-                                                    //checked={isItemSelected}
+                                                    checked={isItemSelected}
                                                     inputProps={{
-                                                        //'aria-labelledby': labelId,
+                                                        'aria-labelledby': labelId,
                                                     }}
                                                 />
                                             </TableCell>

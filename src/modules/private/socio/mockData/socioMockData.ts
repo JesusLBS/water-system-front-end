@@ -2,6 +2,7 @@ import { Data, HeadCell } from "../interfaces/Data";
 
 export const rows: Data[] = [
     {
+        id: 1,
         uid: "9pfiwn",
         fullName: "Jose Perez Martinez",
         email: "user_9pfiwn@example.com",
@@ -12,6 +13,7 @@ export const rows: Data[] = [
         actions: null
     },
     {
+        id: 2,
         uid: "m0ngtr",
         fullName: "Ana Gonzalez Johnson",
         email: "user_m0ngtr@example.com",
