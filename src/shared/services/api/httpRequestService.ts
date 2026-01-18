@@ -14,10 +14,16 @@ const apiKey = import.meta.env.VITE_APP_API_KEY;
 
 const httpRequestService = {
     async request<T>({ url, method = 'GET', data, headers, client = 'axios' }: RequestOptions): Promise<T> {
+        const token = localStorage.getItem('x-token');
         const updatedHeaders = {
             'x-api-key': apiKey,
             ...headers
         };
+
+        if (token) {
+            updatedHeaders['Authorization'] = `Bearer ${token}`;
+        }
+
         if (client === 'axios') {
             return this.axiosRequest<T>({ url, method, data, headers: updatedHeaders });
         } else {

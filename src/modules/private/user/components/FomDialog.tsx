@@ -28,9 +28,10 @@ interface FormDialogProps {
     onClose: () => void;
     isEdit: boolean;
     item?: { name: string; email: string; role: string };
+    onSubmit: (data: any) => void;
 }
 
-const FormDialog: React.FC<FormDialogProps> = ({ openDialog, onClose, isEdit, item }) => {
+const FormDialog: React.FC<FormDialogProps> = ({ openDialog, onClose, isEdit, item, onSubmit }) => {
 
     if (isEdit) console.log(JSON.stringify(item, null, 2))
     const initialValues = isEdit
@@ -48,8 +49,7 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, onClose, isEdit, it
         };
 
     const handleFormSubmit = (values: any) => {
-        console.log('Form data:', values);
-        onClose();
+        onSubmit(values);
     };
 
     return (
