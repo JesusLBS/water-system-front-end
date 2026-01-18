@@ -1,6 +1,8 @@
 import { IndexQueryParams } from "../../../../interfaces/shared/index-params.interface";
 import httpRequestService from "../../../../shared/services/api/httpRequestService";
 import { UsersResponse } from "../interfaces/user.interface";
+import { ApiResponse } from "../../../../interfaces/shared/api-response.interface";
+import { CreateUserPayload } from "../interfaces/create-user.interface";
 
 export default class UserService {
     private url: string;
@@ -32,5 +34,9 @@ export default class UserService {
         const endpoint = `${this.url}?${query}`;
 
         return httpRequestService.get<UsersResponse>(endpoint, null);
+    }
+
+    async store(payload: CreateUserPayload) {
+        return httpRequestService.post<ApiResponse>(this.url, payload);
     }
 }

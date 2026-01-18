@@ -7,6 +7,7 @@ import { IndexQueryParams } from '../../../../interfaces/shared/index-params.int
 import UsersTable from '../components/UserTable';
 import FormDialog from '../components/FomDialog';
 import { ReusableStatsCards } from '../../../../shared/components/ReusableStatsCards';
+import { showErrorToast, showSuccessToast } from '../../../../utils/toastNotifications';
 
 /**
  * UserPage (container) - controls pagination, sorting, search and calls API.
@@ -93,9 +94,23 @@ const UserPage: React.FC = () => {
         setOpenDialog(false);
     };
 
-    const onSubmit = (values: any) => {
-        console.log('Form data:');
-        console.log(JSON.stringify(values, null, 2))
+    const generateUid = (length = 16) =>
+        Math.random().toString(36).substring(2, 2 + length);
+
+    const onSubmit = async (values: any) => {
+        try {
+            //console.log(JSON.stringify(values, null, 2))
+            await userService.store({
+                ...values,
+                uid: generateUid(),
+            });
+            setOpenDialog(false);
+            setPaginationModel((p) => ({ ...p }));
+            showSuccessToast('Regfistro de usuario exitoso!');
+        } catch (error) {
+            console.error(error);
+            showErrorToast('No se pudo registrar el usuario.');
+        }
     };
 
     return (
