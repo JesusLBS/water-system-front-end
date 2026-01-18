@@ -2,10 +2,10 @@ import Grid from '@mui/material/Grid2';
 import { Card, CardContent, Typography, useMediaQuery, useTheme } from '@mui/material';
 
 export const ReusableStatsCards = ({ meta }: { meta: any }) => {
-    if (!meta) return null;
-
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+    if (!meta) return null;
 
     if (isMobile) {
         return (
