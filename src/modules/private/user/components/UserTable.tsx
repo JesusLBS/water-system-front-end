@@ -53,6 +53,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
         onSearchChange={onSearchChange}
         onWithTrashedChange={onWithTrashedChange}
         onAdd={onAdd}
+        addLabel={"Add User"}
       />
 
       {/* Table component */}

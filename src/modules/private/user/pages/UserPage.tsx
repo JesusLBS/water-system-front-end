@@ -6,6 +6,7 @@ import { GridSortModel, GridPaginationModel } from '@mui/x-data-grid';
 import { IndexQueryParams } from '../../../../interfaces/shared/index-params.interface';
 import UsersTable from '../components/UserTable';
 import FormDialog from '../components/FomDialog';
+import { ReusableStatsCards } from '../../../../shared/components/ReusableStatsCards';
 
 /**
  * UserPage (container) - controls pagination, sorting, search and calls API.
@@ -14,8 +15,8 @@ const userService = new UserService();
 
 const UserPage: React.FC = () => {
     const [users, setUsers] = useState<UserRow[]>([]);
-    const [total, setTotal] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(false);
+    const [meta, setMeta] = useState<UsersResponse['data']['meta'] | null>(null);
 
     // DataGrid paginationModel is { page, pageSize } (page is 0-based)
     const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
@@ -61,7 +62,8 @@ const UserPage: React.FC = () => {
                 const response: UsersResponse = await userService.index(apiParams);
                 if (!mounted) return;
                 setUsers(response.data.rows);
-                setTotal(response.data.meta.total || 0);
+                setMeta(response.data.meta);
+
             } catch (error) {
                 console.error('Error fetching users:', error);
             } finally {
@@ -98,9 +100,10 @@ const UserPage: React.FC = () => {
 
     return (
         <div>
+            <ReusableStatsCards meta={meta} />
             <UsersTable
                 users={users}
-                total={total}
+                total={meta?.filtered || 0}
                 paginationModel={paginationModel}
                 onPaginationModelChange={handlePaginationModelChange}
                 sortModel={sortModel}
