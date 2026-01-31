@@ -97,19 +97,32 @@ const UserPage: React.FC = () => {
     const generateUid = (length = 16) =>
         Math.random().toString(36).substring(2, 2 + length);
 
-    const onSubmit = async (values: any) => {
+    const handleFormSubmit = async (values: any, isEdit: boolean) => {
         try {
-            //console.log(JSON.stringify(values, null, 2))
-            await userService.store({
-                ...values,
-                uid: generateUid(),
-            });
+            const response = isEdit
+                ? await userService.update(values)
+                : await userService.store({ ...values, uid: generateUid() });
+
+            if (!response.ok) {
+                showErrorToast(
+                    isEdit
+                        ? 'No se pudo actualizar el usuario'
+                        : 'No se pudo crear el usuario'
+                );
+                return;
+            }
+
+            showSuccessToast(
+                isEdit
+                    ? 'Usuario actualizado correctamente'
+                    : 'Usuario creado correctamente'
+            );
+
             setOpenDialog(false);
             setPaginationModel((p) => ({ ...p }));
-            showSuccessToast('Regfistro de usuario exitoso!');
         } catch (error) {
             console.error(error);
-            showErrorToast('No se pudo registrar el usuario.');
+            showErrorToast('Error inesperado al guardar el usuario');
         }
     };
 
@@ -132,13 +145,14 @@ const UserPage: React.FC = () => {
                 onSearchChange={setSearch}
                 onWithTrashedChange={setWithTrashed}
                 onAdd={() => handleOpenDialog()}
+                onEditSubmit={handleFormSubmit}
             />
 
             <FormDialog
                 openDialog={openDialog}
                 onClose={handleCloseDialog}
                 isEdit={false}
-                onSubmit={onSubmit}
+                onSubmit={handleFormSubmit}
             />
         </div>
     );

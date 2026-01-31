@@ -3,25 +3,10 @@ import { Chip } from '@mui/material';
 import MenuListButton from './MenuListButton';
 import { UserRow } from '../interfaces/user.interface';
 
-export const columnsTable: GridColDef<UserRow>[] = [
-    {
-        field: 'name',
-        headerName: 'Name',
-        flex: 1,
-        minWidth: 150,
-    },
-    {
-        field: 'email',
-        headerName: 'Email',
-        flex: 1,
-        minWidth: 200,
-    },
-    {
-        field: 'role',
-        headerName: 'Role',
-        flex: 0.7,
-        minWidth: 120,
-    },
+export const getColumnsTable = (onEditSubmit: (values: any, isEdit: boolean) => void): GridColDef<UserRow>[] => [
+    { field: 'name', headerName: 'Name', flex: 1, minWidth: 150 },
+    { field: 'email', headerName: 'Email', flex: 1, minWidth: 200 },
+    { field: 'role', headerName: 'Role', flex: 0.7, minWidth: 120 },
     {
         field: 'status',
         headerName: 'Status',
@@ -41,6 +26,8 @@ export const columnsTable: GridColDef<UserRow>[] = [
         sortable: false,
         filterable: false,
         width: 120,
-        renderCell: (params) => <MenuListButton item={params.row} />,
+        renderCell: (params) => (
+            <MenuListButton item={params.row} onEditSubmit={onEditSubmit} />
+        ),
     },
 ];

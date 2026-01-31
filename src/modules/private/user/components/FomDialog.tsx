@@ -15,6 +15,7 @@ import {
     FormLabel,
 } from '@mui/material';
 import { roles } from '../mockData/mockData';
+import { UserRow } from '../interfaces/user.interface';
 
 const validationSchema = Yup.object({
     name: Yup.string().required('Name is required'),
@@ -27,19 +28,23 @@ interface FormDialogProps {
     openDialog: boolean;
     onClose: () => void;
     isEdit: boolean;
-    item?: { name: string; email: string; role: string };
-    onSubmit: (data: any) => void;
+    item?: UserRow;
+    onSubmit: (data: any, isEdit: boolean) => void;
 }
 
 const FormDialog: React.FC<FormDialogProps> = ({ openDialog, onClose, isEdit, item, onSubmit }) => {
 
-    if (isEdit) console.log(JSON.stringify(item, null, 2))
+    if (isEdit) {
+        //console.log(JSON.stringify(item, null, 2))
+    }
+
     const initialValues = isEdit
         ? {
-            name: 'John Doe',
-            email: 'john.doe@example.com',
+            name: item?.name,
+            email: item?.email,
             roleId: '1',
-            active: true,
+            active: item?.status === "active" ? true : false,
+            uid: item?.uid
         }
         : {
             name: 'any',
@@ -49,11 +54,11 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, onClose, isEdit, it
         };
 
     const handleFormSubmit = (values: any) => {
-        onSubmit(values);
+        onSubmit(values, isEdit);
     };
 
     return (
-        <Dialog open={openDialog} onClose={onClose} aria-labelledby="form-dialog-title">
+        <Dialog open={openDialog} onClose={onClose} disableRestoreFocus aria-labelledby="form-dialog-title">
             <DialogTitle>{isEdit ? 'Edit User' : 'Add New User'}</DialogTitle>
             <Formik
                 initialValues={initialValues}
@@ -69,6 +74,7 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, onClose, isEdit, it
                                 label="Name"
                                 fullWidth
                                 margin="dense"
+                                autoFocus
                                 error={touched.name && Boolean(errors.name)}
                                 helperText={touched.name && errors.name}
                             />

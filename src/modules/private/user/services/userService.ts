@@ -39,4 +39,8 @@ export default class UserService {
     async store(payload: CreateUserPayload) {
         return httpRequestService.post<ApiResponse>(this.url, payload);
     }
+
+    async update(payload: CreateUserPayload) {
+        return httpRequestService.put<ApiResponse>(this.url, payload);
+    }
 }

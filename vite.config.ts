@@ -8,4 +8,8 @@ export default defineConfig({
     globals: true,
     setupFiles: './src/test/setup.ts',
   },
+  server: {
+    port: 5173,
+    open: true 
+  }
 })

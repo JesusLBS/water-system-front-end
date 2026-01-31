@@ -3,7 +3,7 @@ import { GridSortModel } from '@mui/x-data-grid';
 import { UserRow } from '../interfaces/user.interface';
 import ReusableTable from '../../../../shared/components/ReusableTable';
 import HeaderTable from '../../../../shared/components/HeaderTable';
-import { columnsTable } from './ColumnsTable';
+import { getColumnsTable } from './ColumnsTable';
 
 interface UsersTableProps {
   users: UserRow[];
@@ -20,6 +20,7 @@ interface UsersTableProps {
   withTrashed: string;
   onSearchChange: (value: string) => void;
   onWithTrashedChange: (value: string) => void;
+  onEditSubmit: (values: any, isEdit: boolean) => void;
 }
 
 /**
@@ -42,7 +43,10 @@ const UsersTable: React.FC<UsersTableProps> = ({
   withTrashed,
   onSearchChange,
   onWithTrashedChange,
+  onEditSubmit
 }) => {
+
+  const columnsTable = getColumnsTable(onEditSubmit);
 
   return (
     <div>

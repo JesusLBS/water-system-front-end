@@ -15,20 +15,21 @@ import {
     Cancel as CancelIcon,
     CheckCircle as CheckCircleIcon
 } from '@mui/icons-material';
+import { UserRow } from '../interfaces/user.interface';
 
 
 interface ActionsDialogProps {
     open: boolean;
     onClose: () => void;
     action: string;
-    item: { name: string; email: string; role: string };
+    item: UserRow;
 }
 
 const ActionsDialog: React.FC<ActionsDialogProps> = ({ open, onClose, action, item }) => {
     const isDelete = action === 'Delete';
 
     return (
-        <Dialog open={open} onClose={onClose} aria-labelledby="action-dialog-title">
+        <Dialog open={open} onClose={onClose} disableRestoreFocus aria-labelledby="action-dialog-title">
             <DialogTitle id="action-dialog-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <WarningIcon color="error" />
                 {isDelete ? 'Eliminación de usuario' : 'Desactivación de usuario'}
