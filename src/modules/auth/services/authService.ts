@@ -8,8 +8,17 @@ export default class AuthService {
     constructor() {
         this.url = `${import.meta.env.VITE_APP_API_URL}${this.resource}`;
     }
-    async login(uid: string) {
-        const scope = `${this.url}login`
-        return httpRequestService.post<Root>(scope, { uid }, {}, 'axios');
+
+    async login(uid: string): Promise<Root> {
+        const response = await httpRequestService.post<Root>(
+            `${this.url}login`,
+            { uid }
+        );
+
+        if (!response.data) {
+            throw new Error('Login response missing data');
+        }
+
+        return response.data;
     }
 };
