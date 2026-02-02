@@ -5,3 +5,6 @@ export interface CreateUserPayload {
     roleId: number;
     status: boolean;
 }
+export interface ActionsUerPayload {
+    dataId: string;
+}

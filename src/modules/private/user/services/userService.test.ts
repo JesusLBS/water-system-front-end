@@ -20,7 +20,7 @@ describe('UserService', () => {
       page: 1,
       sort: 'id',
       direction: 'asc',
-      withTrashed: false,
+      withTrashed: "",
       search: null,
     });
 

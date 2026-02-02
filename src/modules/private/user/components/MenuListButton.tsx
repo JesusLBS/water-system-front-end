@@ -1,129 +1,109 @@
-import React from 'react';
+import * as React from 'react';
 import {
   IconButton,
   Menu,
   MenuItem,
   ListItemIcon,
-  ListItemText
+  ListItemText,
 } from '@mui/material';
-import {
-  MoreVert as MoreVertIcon,
-  Block as DeactivateIcon,
-  Delete as DeleteIcon,
-  Edit as EditIcon,
-  Visibility as VisibilityIcon
-} from '@mui/icons-material';
-import ActionsDialog from './ActionsDialog';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { ActionItem, DialogActionKey, getUserActionsByStatus } from '../interfaces/actionTypes.config.interface';
+
 import FormDialog from './FomDialog';
 import { UserRow } from '../interfaces/user.interface';
+import ActionsDialog from './ActionsDialog';
 
 interface MenuListButtonProps {
   item: UserRow;
-  onEditSubmit: (values: any, isEdit: boolean) => void; // callback hacia el padre
+  onEditSubmit: (values: any, isEdit: boolean) => void;
+  onConfirm: (action: DialogActionKey, item: UserRow) => void;
 }
 
-type ActionType = 'dialog' | 'form';
+export const MenuListButton: React.FC<MenuListButtonProps> = ({
+  item,
+  onEditSubmit,
+  onConfirm,
+}) => {
+  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
-interface ActionItem {
-  key: string;
-  label: string;
-  Icon: React.ElementType;
-  type: ActionType;
-}
-
-const actions: ActionItem[] = [
-  { key: 'Deactivate', label: 'Deactivate', Icon: DeactivateIcon, type: 'dialog' },
-  { key: 'Delete', label: 'Delete', Icon: DeleteIcon, type: 'dialog' },
-  { key: 'Edit', label: 'Edit', Icon: EditIcon, type: 'form' },
-  { key: 'Show', label: 'Show', Icon: VisibilityIcon, type: 'form' },
-];
-
-const MenuListButton: React.FC<MenuListButtonProps> = ({ item, onEditSubmit }) => {
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [formDialogOpen, setFormDialogOpen] = React.useState(false);
+
   const [isEdit, setIsEdit] = React.useState(false);
-  const [action, setAction] = React.useState<string | null>(null);
+  const [action, setAction] = React.useState<DialogActionKey | null>(null);
+  const actions = React.useMemo(
+    () => getUserActionsByStatus(item.status),
+    [item.status]
+  );
 
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleActionClick = (selectedAction: string, type: ActionType) => {
-    if (type === 'dialog') {
-      setAction(selectedAction);
-      setDialogOpen(true);
-    } else if (type === 'form') {
-      setIsEdit(selectedAction === 'Edit');
+  const handleActionClick = (actionItem: ActionItem) => {
+    if (actionItem.type === 'form') {
+      setIsEdit(actionItem.key === 'Edit');
       setFormDialogOpen(true);
+      return;
     }
-    handleMenuClose();
+
+    setAction(actionItem.key as DialogActionKey);
+    setDialogOpen(true);
   };
 
-  const handleDialogClose = () => setDialogOpen(false);
-
-  const handleFormDialogClose = () => {
-    setFormDialogOpen(false);
-    setIsEdit(false);
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+    setAction(null);
   };
 
-  const handleFormSubmit = (values: any) => {
-    onEditSubmit(values, isEdit);
-    handleFormDialogClose();
+  const handleConfirm = () => {
+    if (!action) return;
+    onConfirm(action, item);
+    handleDialogClose();
   };
 
   return (
     <>
-      <IconButton
-        onClick={(event) => {
-          event.stopPropagation();
-          handleMenuOpen(event);
-        }}
-      >
+      <IconButton onClick={(e) => {
+        e.stopPropagation();
+        setAnchorEl(e.currentTarget)
+      }}>
         <MoreVertIcon />
       </IconButton>
 
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
+        onClose={() => setAnchorEl(null)}
       >
-        {actions.map(({ key, label, Icon, type }) => (
+        {actions.map((actionItem) => (
           <MenuItem
-            key={key}
-            onClick={(event) => {
-              event.stopPropagation();
-              handleActionClick(key, type);
+            key={actionItem.key}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleActionClick(actionItem);
+              setAnchorEl(null);
             }}
           >
-            <ListItemIcon><Icon /></ListItemIcon>
-            <ListItemText>{label}</ListItemText>
+            <ListItemIcon>
+              <actionItem.Icon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>{actionItem.label}</ListItemText>
           </MenuItem>
         ))}
       </Menu>
 
-      {action && (
-        <ActionsDialog
-          open={dialogOpen}
-          onClose={handleDialogClose}
-          action={action}
-          item={item}
-        />
-      )}
+      <ActionsDialog
+        open={dialogOpen}
+        action={action}
+        item={item}
+        onClose={handleDialogClose}
+        onConfirm={handleConfirm}
+      />
 
       <FormDialog
         openDialog={formDialogOpen}
-        onClose={handleFormDialogClose}
+        onClose={() => setFormDialogOpen(false)}
         isEdit={isEdit}
         item={item}
-        onSubmit={handleFormSubmit} // llama a UserPage con valores y flag de edición
+        onSubmit={(values) => onEditSubmit(values, isEdit)}
       />
     </>
   );
 };
-
-export default MenuListButton;

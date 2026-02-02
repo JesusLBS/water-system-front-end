@@ -1,9 +1,15 @@
 import { GridColDef } from '@mui/x-data-grid';
 import { Chip } from '@mui/material';
-import MenuListButton from './MenuListButton';
-import { UserRow } from '../interfaces/user.interface';
 
-export const getColumnsTable = (onEditSubmit: (values: any, isEdit: boolean) => void): GridColDef<UserRow>[] => [
+import { UserRow } from '../interfaces/user.interface';
+import { MenuListButton } from './MenuListButton';
+import { DialogActionKey } from '../interfaces/actionTypes.config.interface';
+
+export const getColumnsTable = (
+    onEditSubmit: (values: any, isEdit: boolean) => void,
+
+    onConfirm: (action: DialogActionKey | null, item: UserRow) => Promise<void>
+): GridColDef < UserRow > [] => [
     { field: 'name', headerName: 'Name', flex: 1, minWidth: 150 },
     { field: 'email', headerName: 'Email', flex: 1, minWidth: 200 },
     { field: 'role', headerName: 'Role', flex: 0.7, minWidth: 120 },
@@ -27,7 +33,7 @@ export const getColumnsTable = (onEditSubmit: (values: any, isEdit: boolean) => 
         filterable: false,
         width: 120,
         renderCell: (params) => (
-            <MenuListButton item={params.row} onEditSubmit={onEditSubmit} />
+            <MenuListButton item={params.row} onEditSubmit={onEditSubmit} onConfirm={onConfirm} />
         ),
     },
 ];

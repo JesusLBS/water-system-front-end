@@ -4,6 +4,7 @@ import { UserRow } from '../interfaces/user.interface';
 import ReusableTable from '../../../../shared/components/ReusableTable';
 import HeaderTable from '../../../../shared/components/HeaderTable';
 import { getColumnsTable } from './ColumnsTable';
+import { DialogActionKey } from '../interfaces/actionTypes.config.interface';
 
 interface UsersTableProps {
   users: UserRow[];
@@ -21,6 +22,7 @@ interface UsersTableProps {
   onSearchChange: (value: string) => void;
   onWithTrashedChange: (value: string) => void;
   onEditSubmit: (values: any, isEdit: boolean) => void;
+  onConfirm: (action: DialogActionKey | null, item: UserRow) => Promise<void>
 }
 
 /**
@@ -43,10 +45,11 @@ const UsersTable: React.FC<UsersTableProps> = ({
   withTrashed,
   onSearchChange,
   onWithTrashedChange,
-  onEditSubmit
+  onEditSubmit,
+  onConfirm,
 }) => {
 
-  const columnsTable = getColumnsTable(onEditSubmit);
+  const columnsTable = getColumnsTable(onEditSubmit,onConfirm);
 
   return (
     <div>

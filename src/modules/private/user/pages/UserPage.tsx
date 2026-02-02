@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react';
-
 import { UserRow, UsersResponse } from '../interfaces/user.interface';
 import UserService from '../services/userService';
 import { GridSortModel, GridPaginationModel } from '@mui/x-data-grid';
@@ -8,6 +7,7 @@ import UsersTable from '../components/UserTable';
 import FormDialog from '../components/FomDialog';
 import { ReusableStatsCards } from '../../../../shared/components/ReusableStatsCards';
 import { showErrorToast, showSuccessToast } from '../../../../utils/toastNotifications';
+import { DialogActionKey } from '../interfaces/actionTypes.config.interface';
 
 /**
  * UserPage (container) - controls pagination, sorting, search and calls API.
@@ -36,6 +36,7 @@ const UserPage: React.FC = () => {
     const [debouncedSearch, setDebouncedSearch] = useState(search);
 
     const [openDialog, setOpenDialog] = useState(false);
+
     useEffect(() => {
         const t = setTimeout(() => setDebouncedSearch(search.trim()), 500);
         return () => clearTimeout(t);
@@ -53,7 +54,6 @@ const UserPage: React.FC = () => {
             search: debouncedSearch || '',
         };
     }, [paginationModel, sortModel, withTrashed, debouncedSearch]);
-
 
     useEffect(() => {
         let mounted = true;
@@ -126,6 +126,49 @@ const UserPage: React.FC = () => {
         }
     };
 
+    const actionHandlers: Record<
+        DialogActionKey,
+        (uid: string) => Promise<boolean>
+    > = {
+        Deactivate: async (uid) => {
+            return await userService.deactivate({ dataId: uid });
+        },
+        Activate: async (uid) => {
+            return await userService.activate({ dataId: uid });
+        },
+        Delete: async (uid) => {
+            return await userService.delete({ dataId: uid });
+        },
+    };
+
+    const successMessages: Record<DialogActionKey, string> = {
+        Deactivate: 'User deactivated successfully',
+        Activate: 'User activated successfully',
+        Delete: 'User deleted successfully',
+    };
+
+    const handleOnConfirm = async (
+        action: DialogActionKey | null,
+        item: UserRow
+    ): Promise<void> => {
+        if (!action) return;
+
+        try {
+            const success = await actionHandlers[action](item.uid);
+
+            if (!success) {
+                showErrorToast('Operation failed');
+                return;
+            }
+
+            showSuccessToast(successMessages[action]);
+            setPaginationModel((p) => ({ ...p }));
+        } catch (error) {
+            console.error(error);
+            showErrorToast('Unexpected error');
+        }
+    };
+
     return (
         <div>
             <ReusableStatsCards meta={meta} />
@@ -146,6 +189,7 @@ const UserPage: React.FC = () => {
                 onWithTrashedChange={setWithTrashed}
                 onAdd={() => handleOpenDialog()}
                 onEditSubmit={handleFormSubmit}
+                onConfirm={handleOnConfirm}
             />
 
             <FormDialog
