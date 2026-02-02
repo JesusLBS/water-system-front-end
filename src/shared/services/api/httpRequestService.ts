@@ -1,37 +1,55 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
+type HttpClient = 'axios' | 'fetch';
 
 interface RequestOptions {
     url: string;
     method?: HttpMethod;
     data?: any;
-    headers?: any;
-    client?: 'axios' | 'fetch';
+    headers?: Record<string, string>;
+    client?: HttpClient;
+}
+
+export interface HttpResponse<T = unknown> {
+    data?: T;
+    status: number;
 }
 
 const apiKey = import.meta.env.VITE_APP_API_KEY;
 
 const httpRequestService = {
-    async request<T>({ url, method = 'GET', data, headers, client = 'axios' }: RequestOptions): Promise<T> {
+    async request<T>({
+        url,
+        method = 'GET',
+        data,
+        headers,
+        client = 'axios',
+    }: RequestOptions): Promise<HttpResponse<T>> {
         const token = localStorage.getItem('x-token');
-        const updatedHeaders = {
-            'x-api-key': apiKey,
-            ...headers
+
+        const updatedHeaders: Record<string, string> = {
+            'x-api-key': apiKey ?? '',
+            ...headers,
         };
 
         if (token) {
-            updatedHeaders['Authorization'] = `Bearer ${token}`;
+            updatedHeaders.Authorization = `Bearer ${token}`;
         }
 
         if (client === 'axios') {
             return this.axiosRequest<T>({ url, method, data, headers: updatedHeaders });
-        } else {
-            return this.fetchRequest<T>({ url, method, data, headers: updatedHeaders });
         }
+
+        return this.fetchRequest<T>({ url, method, data, headers: updatedHeaders });
     },
 
-    async axiosRequest<T>({ url, method, data, headers }: RequestOptions): Promise<T> {
+    async axiosRequest<T>({
+        url,
+        method,
+        data,
+        headers,
+    }: RequestOptions): Promise<HttpResponse<T>> {
         try {
             const config: AxiosRequestConfig = {
                 url,
@@ -39,51 +57,104 @@ const httpRequestService = {
                 headers,
                 data,
             };
+
             const response: AxiosResponse<T> = await axios(config);
-            return response.data;
+
+            return {
+                status: response.status,
+                ...(response.data !== undefined && { data: response.data }),
+            };
         } catch (error) {
             console.error('Axios Request Error:', error);
             throw error;
         }
     },
 
-    async fetchRequest<T>({ url, method, data, headers }: RequestOptions): Promise<T> {
+    async fetchRequest<T>({
+        url,
+        method,
+        data,
+        headers,
+    }: RequestOptions): Promise<HttpResponse<T>> {
         try {
-            const options: RequestInit = {
+            const response = await fetch(url, {
                 method,
                 headers: {
                     'Content-Type': 'application/json',
                     ...headers,
                 },
-                body: method !== 'GET' ? JSON.stringify(data) : null,
-            };
+                body:
+                    method !== 'GET' && data !== undefined
+                        ? JSON.stringify(data)
+                        : undefined,
+            });
 
-            const response = await fetch(url, options);
             if (!response.ok) {
-                throw new Error(`Fetch error: ${response.statusText}`);
+                const text = await response.text().catch(() => '');
+                throw new Error(
+                    `Fetch error: ${response.status} ${response.statusText} ${text}`
+                );
             }
 
-            const result = await response.json();
-            return result as T;
+            // 204 No Content → no data
+            if (response.status === 204) {
+                return {
+                    status: 204,
+                };
+            }
+
+            // Some APIs return 200 with empty body
+            const text = await response.text();
+
+            if (!text) {
+                return {
+                    status: response.status,
+                };
+            }
+
+            const result = JSON.parse(text) as T;
+
+            return {
+                data: result,
+                status: response.status,
+            };
         } catch (error) {
             console.error('Fetch Request Error:', error);
             throw error;
         }
     },
 
-    get<T>(url: string, headers?: any, client: 'axios' | 'fetch' = 'axios'): Promise<T> {
+    get<T>(
+        url: string,
+        headers?: Record<string, string>,
+        client: HttpClient = 'axios'
+    ): Promise<HttpResponse<T>> {
         return this.request<T>({ url, method: 'GET', headers, client });
     },
 
-    post<T>(url: string, data: any, headers?: any, client: 'axios' | 'fetch' = 'axios'): Promise<T> {
+    post<T>(
+        url: string,
+        data: any,
+        headers?: Record<string, string>,
+        client: HttpClient = 'axios'
+    ): Promise<HttpResponse<T>> {
         return this.request<T>({ url, method: 'POST', data, headers, client });
     },
 
-    put<T>(url: string, data: any, headers?: any, client: 'axios' | 'fetch' = 'axios'): Promise<T> {
+    put<T>(
+        url: string,
+        data: any,
+        headers?: Record<string, string>,
+        client: HttpClient = 'axios'
+    ): Promise<HttpResponse<T>> {
         return this.request<T>({ url, method: 'PUT', data, headers, client });
     },
 
-    delete<T>(url: string, headers?: any, client: 'axios' | 'fetch' = 'axios'): Promise<T> {
+    delete<T>(
+        url: string,
+        headers?: Record<string, string>,
+        client: HttpClient = 'axios'
+    ): Promise<HttpResponse<T>> {
         return this.request<T>({ url, method: 'DELETE', headers, client });
     },
 };
