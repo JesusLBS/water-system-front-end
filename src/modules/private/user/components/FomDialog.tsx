@@ -28,11 +28,12 @@ interface FormDialogProps {
     openDialog: boolean;
     onClose: () => void;
     isEdit: boolean;
+    isShow: boolean;
     item?: UserRow;
     onSubmit: (data: any, isEdit: boolean) => void;
 }
 
-const FormDialog: React.FC<FormDialogProps> = ({ openDialog, onClose, isEdit, item, onSubmit }) => {
+const FormDialog: React.FC<FormDialogProps> = ({ openDialog, onClose, isEdit, isShow, item, onSubmit }) => {
 
     if (isEdit) {
         //console.log(JSON.stringify(item, null, 2))
@@ -59,7 +60,7 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, onClose, isEdit, it
 
     return (
         <Dialog open={openDialog} onClose={onClose} disableRestoreFocus aria-labelledby="form-dialog-title">
-            <DialogTitle>{isEdit ? 'Edit User' : 'Add New User'}</DialogTitle>
+            {!isShow && <DialogTitle>{isEdit ? 'Edit User' : 'Add New User'}</DialogTitle>}
             <Formik
                 initialValues={initialValues}
                 validationSchema={validationSchema}
@@ -75,6 +76,7 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, onClose, isEdit, it
                                 fullWidth
                                 margin="dense"
                                 autoFocus
+                                disabled={isShow}
                                 error={touched.name && Boolean(errors.name)}
                                 helperText={touched.name && errors.name}
                             />
@@ -85,6 +87,7 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, onClose, isEdit, it
                                 type="email"
                                 fullWidth
                                 margin="dense"
+                                disabled={isShow}
                                 error={touched.email && Boolean(errors.email)}
                                 helperText={touched.email && errors.email}
                             />
@@ -95,6 +98,7 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, onClose, isEdit, it
                                 select
                                 fullWidth
                                 margin="dense"
+                                disabled={isShow}
                                 error={touched.roleId && Boolean(errors.roleId)}
                                 helperText={touched.roleId && errors.roleId}
                             >
@@ -124,13 +128,13 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, onClose, isEdit, it
                                     gap: 2,
                                 }}
                             >
-                                <FormControlLabel value="active" control={<Radio />} label="Active" />
-                                <FormControlLabel value="inactive" control={<Radio />} label="Inactive" />
+                                <FormControlLabel value="active" disabled={isShow} control={<Radio />} label="Active" />
+                                <FormControlLabel value="inactive" disabled={isShow} control={<Radio />} label="Inactive" />
                             </RadioGroup>
                         </DialogContent>
                         <DialogActions>
-                            <Button onClick={onClose}>Cancel</Button>
-                            <Button type="submit">{isEdit ? 'Save Changes' : 'Add User'}</Button>
+                            <Button onClick={onClose}>{isShow ? 'Close' : 'Cancel'}</Button>
+                            {!isShow && <Button type="submit">{isEdit ? 'Save Changes' : 'Add User'}</Button>}
                         </DialogActions>
                     </Form>
                 )}

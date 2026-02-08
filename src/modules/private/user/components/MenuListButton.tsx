@@ -30,6 +30,7 @@ export const MenuListButton: React.FC<MenuListButtonProps> = ({
   const [formDialogOpen, setFormDialogOpen] = React.useState(false);
 
   const [isEdit, setIsEdit] = React.useState(false);
+  const [isShow, setIsShow] = React.useState(false);
   const [action, setAction] = React.useState<DialogActionKey | null>(null);
   const actions = React.useMemo(
     () => getUserActionsByStatus(item.status),
@@ -39,6 +40,7 @@ export const MenuListButton: React.FC<MenuListButtonProps> = ({
   const handleActionClick = (actionItem: ActionItem) => {
     if (actionItem.type === 'form') {
       setIsEdit(actionItem.key === 'Edit');
+      setIsShow(actionItem.key === 'Show');
       setFormDialogOpen(true);
       return;
     }
@@ -101,6 +103,7 @@ export const MenuListButton: React.FC<MenuListButtonProps> = ({
         openDialog={formDialogOpen}
         onClose={() => setFormDialogOpen(false)}
         isEdit={isEdit}
+        isShow={isShow}
         item={item}
         onSubmit={(values) => onEditSubmit(values, isEdit)}
       />
