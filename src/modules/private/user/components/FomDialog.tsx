@@ -15,6 +15,7 @@ import {
     FormLabel,
 } from '@mui/material';
 import { roles } from '../mockData/mockData';
+import { UserRow } from '../interfaces/user.interface';
 
 const validationSchema = Yup.object({
     name: Yup.string().required('Name is required'),
@@ -27,18 +28,24 @@ interface FormDialogProps {
     openDialog: boolean;
     onClose: () => void;
     isEdit: boolean;
-    item?: { name: string; email: string; role: string };
+    isShow: boolean;
+    item?: UserRow;
+    onSubmit: (data: any, isEdit: boolean) => void;
 }
 
-const FormDialog: React.FC<FormDialogProps> = ({ openDialog, onClose, isEdit, item }) => {
+const FormDialog: React.FC<FormDialogProps> = ({ openDialog, onClose, isEdit, isShow, item, onSubmit }) => {
 
-    if (isEdit) console.log(JSON.stringify(item, null, 2))
+    if (isEdit) {
+        //console.log(JSON.stringify(item, null, 2))
+    }
+
     const initialValues = isEdit
         ? {
-            name: 'John Doe',
-            email: 'john.doe@example.com',
+            name: item?.name,
+            email: item?.email,
             roleId: '1',
-            active: true,
+            active: item?.status === "active" ? true : false,
+            uid: item?.uid
         }
         : {
             name: 'any',
@@ -48,13 +55,12 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, onClose, isEdit, it
         };
 
     const handleFormSubmit = (values: any) => {
-        console.log('Form data:', values);
-        onClose();
+        onSubmit(values, isEdit);
     };
 
     return (
-        <Dialog open={openDialog} onClose={onClose} aria-labelledby="form-dialog-title">
-            <DialogTitle>{isEdit ? 'Edit User' : 'Add New User'}</DialogTitle>
+        <Dialog open={openDialog} onClose={onClose} disableRestoreFocus aria-labelledby="form-dialog-title">
+            {!isShow && <DialogTitle>{isEdit ? 'Edit User' : 'Add New User'}</DialogTitle>}
             <Formik
                 initialValues={initialValues}
                 validationSchema={validationSchema}
@@ -69,6 +75,8 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, onClose, isEdit, it
                                 label="Name"
                                 fullWidth
                                 margin="dense"
+                                autoFocus
+                                disabled={isShow}
                                 error={touched.name && Boolean(errors.name)}
                                 helperText={touched.name && errors.name}
                             />
@@ -79,6 +87,7 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, onClose, isEdit, it
                                 type="email"
                                 fullWidth
                                 margin="dense"
+                                disabled={isShow}
                                 error={touched.email && Boolean(errors.email)}
                                 helperText={touched.email && errors.email}
                             />
@@ -89,6 +98,7 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, onClose, isEdit, it
                                 select
                                 fullWidth
                                 margin="dense"
+                                disabled={isShow}
                                 error={touched.roleId && Boolean(errors.roleId)}
                                 helperText={touched.roleId && errors.roleId}
                             >
@@ -118,13 +128,13 @@ const FormDialog: React.FC<FormDialogProps> = ({ openDialog, onClose, isEdit, it
                                     gap: 2,
                                 }}
                             >
-                                <FormControlLabel value="active" control={<Radio />} label="Active" />
-                                <FormControlLabel value="inactive" control={<Radio />} label="Inactive" />
+                                <FormControlLabel value="active" disabled={isShow} control={<Radio />} label="Active" />
+                                <FormControlLabel value="inactive" disabled={isShow} control={<Radio />} label="Inactive" />
                             </RadioGroup>
                         </DialogContent>
                         <DialogActions>
-                            <Button onClick={onClose}>Cancel</Button>
-                            <Button type="submit">{isEdit ? 'Save Changes' : 'Add User'}</Button>
+                            <Button onClick={onClose}>{isShow ? 'Close' : 'Cancel'}</Button>
+                            {!isShow && <Button type="submit">{isEdit ? 'Save Changes' : 'Add User'}</Button>}
                         </DialogActions>
                     </Form>
                 )}
