@@ -28,7 +28,7 @@ interface FormDialogProps {
     openDialog: boolean;
     onClose: () => void;
     isEdit: boolean;
-    isShow: boolean;
+    isShow?: boolean;
     item?: UserRow;
     onSubmit: (data: any, isEdit: boolean) => void;
 }
