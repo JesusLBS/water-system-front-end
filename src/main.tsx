@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
@@ -8,11 +8,25 @@ import store from './redux/store';
 import App from './App';
 import 'react-toastify/dist/ReactToastify.css';
 
+const getInitialMode = (): boolean => {
+    const savedMode = localStorage.getItem('theme');
+
+    if (savedMode) {
+        return savedMode === 'dark';
+    }
+
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+};
+
 const AppWrapper: React.FC = () => {
-    const [darkMode, setDarkMode] = useState(false);
+    const [darkMode, setDarkMode] = useState<boolean>(getInitialMode);
+
+    useEffect(() => {
+        localStorage.setItem('theme', darkMode ? 'dark' : 'light');
+    }, [darkMode]);
 
     const toggleTheme = () => {
-        setDarkMode((prevMode) => !prevMode);
+        setDarkMode(prev => !prev);
     };
 
     const theme = createTheme({
