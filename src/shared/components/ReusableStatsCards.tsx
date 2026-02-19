@@ -1,7 +1,7 @@
 import Grid from '@mui/material/Grid2';
 import { Card, CardContent, Typography, useMediaQuery, useTheme } from '@mui/material';
 
-export const ReusableStatsCards = ({ meta }: { meta: any }) => {
+export const ReusableStatsCards = ({ meta, label }: { meta: any, label: string }) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -12,7 +12,7 @@ export const ReusableStatsCards = ({ meta }: { meta: any }) => {
             <Card sx={{ mb: 2 }}>
                 <CardContent>
                     <Typography variant="body2" mb={1}>
-                        Users
+                        {label}
                     </Typography>
 
                     <Grid container spacing={1}>

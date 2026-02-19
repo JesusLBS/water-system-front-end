@@ -171,7 +171,7 @@ const UserPage: React.FC = () => {
 
     return (
         <div>
-            <ReusableStatsCards meta={meta} />
+            <ReusableStatsCards meta={meta} label="Users" />
             <UsersTable
                 users={users}
                 total={meta?.filtered || 0}
