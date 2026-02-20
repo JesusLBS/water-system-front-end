@@ -1,61 +1,124 @@
 import React from 'react';
 import {
     Dialog,
-    DialogActions,
     DialogContent,
-    DialogContentText,
-    DialogTitle,
+    DialogActions,
     Button,
     Typography,
+    Stack,
+    Box,
+    Divider,
+    Avatar,
 } from '@mui/material';
+import { Cancel as CancelIcon } from '@mui/icons-material';
 
 import {
-    Warning as WarningIcon,
-    Delete as DeleteIcon,
-    Cancel as CancelIcon,
-    CheckCircle as CheckCircleIcon
-} from '@mui/icons-material';
-
+    ACTION_DIALOG_CONFIG,
+    DialogActionKey,
+} from '../interfaces/actionTypes.config.interface';
+import { SocioRow } from '../interfaces/socio.interface';
 
 interface ActionsDialogProps {
     open: boolean;
+    action: DialogActionKey | null;
+    item: SocioRow;
     onClose: () => void;
-    action: string;
-    item: { fullName: string; email: string; };
+    onConfirm: () => void;
 }
 
-const ActionsDialog: React.FC<ActionsDialogProps> = ({ open, onClose, action, item }) => {
-    const isDelete = action === 'Delete';
+const ActionsDialog: React.FC<ActionsDialogProps> = ({
+    open,
+    action,
+    item,
+    onClose,
+    onConfirm,
+}) => {
+    if (!action) return null;
+
+    const config = ACTION_DIALOG_CONFIG[action];
+    const HeaderIcon = config.HeaderIcon;
+    const ConfirmIcon = config.Icon;
 
     return (
-        <Dialog open={open} onClose={onClose} aria-labelledby="action-dialog-title">
-            <DialogTitle id="action-dialog-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <WarningIcon color="error" />
-                {isDelete ? 'Eliminación de socio' : 'Desactivación de socio'}
-            </DialogTitle>
-            <DialogContent>
-                <DialogContentText>
-                    {`¿Está seguro de ${isDelete ? 'eliminar' : 'desactivar'} al siguiente socio?`}
-                </DialogContentText>
-                <Typography variant="body2" style={{ marginTop: '10px' }}>
-                    <strong>Nombre:</strong> {item.fullName}
-                </Typography>
-                <Typography variant="body2">
-                    <strong>Email:</strong> {item.email}
-                </Typography>
-            </DialogContent>
-            <DialogActions
+        <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
+            {/* HEADER */}
+            <Box
                 sx={{
-                    flexDirection: {
-                        xs: 'column',
-                        sm: 'row',
-                    },
-                }}>
-                <Button onClick={onClose} color="primary" startIcon={<CancelIcon />}>
+                    p: 3,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 2,
+                    backgroundColor: `${config.confirmColor}.lighter`,
+                }}
+            >
+                <Avatar
+                    sx={{
+                        bgcolor: `${config.confirmColor}.main`,
+                        color: 'common.white',
+                        width: 44,
+                        height: 44,
+                    }}
+                >
+                    <HeaderIcon fontSize="small" />
+                </Avatar>
+
+                <Box>
+                    <Typography fontWeight={600}>
+                        {config.title}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                        This action cannot be undone
+                    </Typography>
+                </Box>
+            </Box>
+
+            {/* CONTENT */}
+            <DialogContent sx={{ pt: 3 }}>
+                <Typography variant="body2" sx={{ mb: 2 }}>
+                    {config.description}
+                </Typography>
+
+                <Divider sx={{ mb: 2 }} />
+
+                {/* USER CARD */}
+                <Box
+                    sx={{
+                        borderRadius: 1.5,
+                        border: '1px solid',
+                        borderColor: 'divider',
+                        p: 2,
+                        bgcolor: 'background.paper',
+                    }}
+                >
+                    <Stack spacing={0.5}>
+                        <Typography variant="subtitle2">
+                            Name:  {item.fullName}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">
+                            Email:  {item.email}
+                        </Typography>
+                    </Stack>
+                </Box>
+            </DialogContent>
+
+            {/* ACTIONS */}
+            <DialogActions sx={{ px: 3, pb: 3 }}>
+                <Button
+                    onClick={onClose}
+                    variant="text"
+                    startIcon={<CancelIcon />}
+                >
                     Cancel
                 </Button>
-                <Button onClick={onClose} color="secondary" startIcon={isDelete ? <DeleteIcon /> : <CheckCircleIcon />} autoFocus>
-                    {isDelete ? 'Eliminar' : 'Desactivar'}
+
+                <Button
+                    onClick={onConfirm}
+                    variant="contained"
+                    color={config.confirmColor}
+                    startIcon={<ConfirmIcon />}
+                    autoFocus
+                >
+                    {config.confirmLabel}
                 </Button>
             </DialogActions>
         </Dialog>

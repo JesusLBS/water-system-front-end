@@ -82,7 +82,7 @@ export default class SocioService {
     }
 
     async activate(payload: ActionsPayload): Promise<boolean> {
-        const endpoint = `${this.url}/activate`;
+        const endpoint = `${this.url}/restore`;
 
         const response = await httpRequestService.post<null>(
             endpoint,
