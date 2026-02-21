@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import SocioService from '../services/socioService';
 import { useSocios } from '../hooks/useSocios';
 import { IndexQueryParams } from '../../../../interfaces/shared/index-params.interface';
@@ -8,6 +8,7 @@ import SocioTable from '../components/SocioTable';
 import { GridPaginationModel, GridSortModel } from '@mui/x-data-grid';
 import { DialogActionKey } from '../interfaces/actionTypes.config.interface';
 import { showErrorToast, showSuccessToast } from '../../../../utils/toastNotifications';
+import FormDialog from '../components/FomDialog';
 
 const socioService = new SocioService();
 
@@ -104,7 +105,12 @@ const SocioPage: React.FC = () => {
 
     const handleOpenDialog = () => setOpenDialog(true);
 
-    const handleFormSubmit = (data: any) => { /* lógica para submit */ };
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+    };
+
+    const generateUid = (length = 16) =>
+        Math.random().toString(36).substring(2, 2 + length);
 
     const refreshTable = () => {
         setTableState(prev => ({
@@ -112,6 +118,46 @@ const SocioPage: React.FC = () => {
             pagination: { ...prev.pagination }
         }));
     };
+
+    const handleFormSubmit = async (values: any, isEdit: boolean) => {
+        try {
+            const payload = {
+                ...values,
+                userData: {
+                    ...values.userData,
+                    uid: generateUid()
+                }
+            }
+            //console.log('Payload:');
+            //console.log(JSON.stringify(payload, null, 2));
+            const response = isEdit
+                ? await socioService.update(payload)
+                : await socioService.store({ ...payload });
+
+            if (!response.ok) {
+                showErrorToast(
+                    isEdit
+                        ? 'No se pudo actualizar el socio'
+                        : 'No se pudo crear el socio'
+                );
+                return;
+            }
+
+            showSuccessToast(
+                isEdit
+                    ? 'Socio actualizado correctamente'
+                    : 'Socio creado correctamente'
+            );
+
+            setOpenDialog(false);
+            refreshTable();
+        } catch (error) {
+            console.error(error);
+            showErrorToast('Error inesperado al guardar el socio');
+        }
+    };
+
+
 
     const handleOnConfirm = async (
         action: DialogActionKey | null,
@@ -154,6 +200,13 @@ const SocioPage: React.FC = () => {
                 onAdd={handleOpenDialog}
                 onEditSubmit={handleFormSubmit}
                 onConfirm={handleOnConfirm}
+            />
+
+            <FormDialog
+                openDialog={openDialog}
+                onClose={handleCloseDialog}
+                isEdit={false}
+                onSubmit={handleFormSubmit}
             />
         </div>
     );
