@@ -3,12 +3,15 @@ import { Box, Stepper, Step, StepLabel, Button, TextField, MenuItem } from '@mui
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { roles } from '../mockData/mockData';
+import { generateMockFormData } from '../mockData/mockGenerator';
 
 interface StepperProps {
     onSubmit: (data: any) => void;
 }
 
 const steps = ['User Info', 'Profile Info', 'Address Info'];
+
+const useMock = import.meta.env.VITE_USE_MOCK === 'true';
 
 const validationSchemas = [
     Yup.object({
@@ -48,11 +51,15 @@ const validationSchemas = [
 ];
 
 const FormStepper: React.FC<StepperProps> = ({ onSubmit }) => {
-    const [formData, setFormData] = useState({
-        userData: { name: '', email: '', roleId: '' },
-        profileData: { lastName: '', secondLastName: '', mobile: '', birthdate: '' },
-        addressData: { address: '', city: '' },
-    });
+    const [formData, setFormData] = useState(() =>
+        useMock
+            ? generateMockFormData()
+            : {
+                userData: { name: '', email: '', roleId: '' },
+                profileData: { lastName: '', secondLastName: '', mobile: '', birthdate: '' },
+                addressData: { address: '', city: '' },
+            }
+    );
 
     const [activeStep, setActiveStep] = useState(0);
 
