@@ -1,7 +1,8 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import DashboardLayout from '../../../shared/layouts/DashboardLayout';
-import SocioPage from '../socio/pages/SocioPage';
-import UserPage from '../user/pages/UserPage';
+import UserRoutes from '../user/routes/UserRoutes';
+import SocioRoutes from '../socio/routes/SocioRoutes';
+
 
 interface PrivateRoutesProps {
     toggleTheme: () => void;
@@ -12,9 +13,9 @@ const PrivateRoutes: React.FC<PrivateRoutesProps> = ({ toggleTheme, darkMode }) 
     return (
         <DashboardLayout toggleTheme={toggleTheme} darkMode={darkMode}>
             <Routes>
-                <Route path="users" element={<UserPage />} />
-                <Route path="socios" element={<SocioPage />} />
-                <Route path="*" element={<Navigate to="/private/users" />} />
+                <Route path="users/*" element={<UserRoutes />} />
+                <Route path="socios/*" element={<SocioRoutes />} />
+                <Route path="*" element={<Navigate to="users" />} />
             </Routes>
         </DashboardLayout>
     );

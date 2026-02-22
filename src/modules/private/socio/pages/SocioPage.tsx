@@ -11,6 +11,7 @@ import { showErrorToast, showSuccessToast } from '../../../../utils/toastNotific
 import FormDialog from '../components/FomDialog';
 import { buildSocioPayload } from '../mappers/socioPayload.mapper';
 import { generateUid } from '../../../../utils/generateUid';
+import { useNavigate } from 'react-router-dom';
 
 const socioService = new SocioService();
 
@@ -179,6 +180,12 @@ const SocioPage: React.FC = () => {
         }
     };
 
+    const navigate = useNavigate();
+
+    const handleDetail = (item: SocioRow) => {
+        navigate(`/private/socios/${item.uid}`);
+    };
+
     return (
         <div>
             <ReusableStatsCards meta={meta} label="Socios" />
@@ -198,6 +205,7 @@ const SocioPage: React.FC = () => {
                 onAdd={handleCreate}
                 onEdit={handleEdit}
                 onConfirm={handleOnConfirm}
+                onDetail={handleDetail}
             />
             <FormDialog
                 openDialog={openDialog}

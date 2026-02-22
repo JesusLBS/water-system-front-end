@@ -46,7 +46,7 @@ export const ACTION_DIALOG_CONFIG = {
    ========================= */
 
 export type DialogActionKey = keyof typeof ACTION_DIALOG_CONFIG;
-export type FormActionKey = 'Edit' | 'Show';
+export type FormActionKey = 'Edit' | 'Detail';
 export type ActionKey = DialogActionKey | FormActionKey;
 export type ActionType = 'dialog' | 'form';
 
@@ -63,8 +63,8 @@ export interface ActionItem {
 
 export const ITEM_ACTIONS: ActionItem[] = [
   {
-    key: 'Show',
-    label: 'View',
+    key: 'Detail',
+    label: 'Detail',
     type: 'form',
     Icon: VisibilityIcon,
   },
@@ -100,8 +100,8 @@ export enum SocioStatus {
 }
 
 export const ACTIONS_BY_STATUS: Record<SocioStatus, ActionKey[]> = {
-  [SocioStatus.ACTIVE]: ['Show', 'Edit', 'Deactivate', 'Delete'],
-  [SocioStatus.INACTIVE]: ['Show', 'Activate', 'Delete'],
+  [SocioStatus.ACTIVE]: ['Detail', 'Edit', 'Deactivate', 'Delete'],
+  [SocioStatus.INACTIVE]: ['Detail', 'Activate', 'Delete'],
 };
 
 export function getUserActionsByStatus(

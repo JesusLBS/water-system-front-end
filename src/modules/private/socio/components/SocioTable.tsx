@@ -26,6 +26,7 @@ interface UsersTableProps {
   // acciones
   onEdit: (item: SocioRow) => void;
   onConfirm: (action: DialogActionKey, item: SocioRow) => Promise<void>;
+  onDetail: (item: SocioRow) => void;
 }
 
 const SocioTable: React.FC<UsersTableProps> = ({
@@ -44,11 +45,12 @@ const SocioTable: React.FC<UsersTableProps> = ({
   onWithTrashedChange,
   onEdit,
   onConfirm,
+  onDetail
 }) => {
 
   const columns = React.useMemo(
-    () => getColumnsTable(onEdit, onConfirm),
-    [onEdit, onConfirm]
+    () => getColumnsTable(onEdit, onConfirm, onDetail),
+    [onEdit, onConfirm, onDetail]
   );
 
   return (

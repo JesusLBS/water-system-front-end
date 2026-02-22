@@ -17,13 +17,15 @@ import { SocioRow } from '../interfaces/socio.interface';
 
 interface MenuListButtonProps {
   item: SocioRow;
-  onEdit: (item: SocioRow) => void; // ✅ nueva prop
+  onEdit: (item: SocioRow) => void;
+  onDetail: (item: SocioRow) => void;
   onConfirm: (action: DialogActionKey, item: SocioRow) => void;
 }
 
 export const MenuListButton: React.FC<MenuListButtonProps> = ({
   item,
   onEdit,
+  onDetail,
   onConfirm,
 }) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
@@ -38,7 +40,10 @@ export const MenuListButton: React.FC<MenuListButtonProps> = ({
   const handleActionClick = (actionItem: ActionItem) => {
     if (actionItem.type === 'form') {
       if (actionItem.key === 'Edit') {
-        onEdit(item); // delega al padre
+        onEdit(item);
+      }
+      if (actionItem.key === 'Detail') {
+        onDetail(item);
       }
       return;
     }

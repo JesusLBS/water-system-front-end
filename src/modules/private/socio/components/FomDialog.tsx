@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Dialog, DialogTitle, Box } from '@mui/material';
+import { Dialog, DialogTitle, Box, IconButton } from '@mui/material';
 import FormStepper from './Stepper';
 import {
     SocioDetailResponse,
     SocioRow
 } from '../interfaces/socio.interface';
 import SocioService from '../services/socioService';
+import { GridCloseIcon } from '@mui/x-data-grid';
 
 interface FormDialogProps {
     openDialog: boolean;
@@ -91,8 +92,19 @@ const FormDialog: React.FC<FormDialogProps> = ({
             fullWidth
             maxWidth="md"
         >
-            <DialogTitle>
+            <DialogTitle
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    pr: 1,
+                }}
+            >
                 {isEdit ? 'Edit Socio' : 'Add New Socio'}
+
+                <IconButton onClick={onClose} size="small">
+                    <GridCloseIcon />
+                </IconButton>
             </DialogTitle>
 
             <Box sx={{ padding: 2 }}>

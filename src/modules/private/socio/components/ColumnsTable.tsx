@@ -6,9 +6,25 @@ import { MenuListButton } from './MenuListButton';
 
 export const getColumnsTable = (
     onEdit: (item: SocioRow) => void,
-    onConfirm: (action: DialogActionKey, item: SocioRow) => Promise<void>
+    onConfirm: (action: DialogActionKey, item: SocioRow) => Promise<void>,
+    onDetail: (item: SocioRow) => void
 ): GridColDef<SocioRow>[] => [
-        { field: 'uid', headerName: 'UUID', flex: 1, minWidth: 150 },
+        {
+            field: 'uid',
+            headerName: 'UUID',
+            flex: 1,
+            minWidth: 120,
+            renderCell: (params) => {
+                const value = params.value as string;
+                const short = value ? value.slice(0, 8) : '';
+
+                return (
+                    <span title={value}>
+                        <strong>{short}</strong>
+                    </span>
+                );
+            },
+        },
         { field: 'fullName', headerName: 'Name', flex: 1, minWidth: 150 },
         { field: 'email', headerName: 'Email', flex: 1, minWidth: 200 },
         { field: 'totalDependents', headerName: 'Dependents', flex: 0.7, minWidth: 120 },
@@ -35,6 +51,7 @@ export const getColumnsTable = (
                 <MenuListButton
                     item={params.row}
                     onEdit={onEdit}
+                    onDetail={onDetail}
                     onConfirm={onConfirm}
                 />
             ),
