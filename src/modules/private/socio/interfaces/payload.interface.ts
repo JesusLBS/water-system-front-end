@@ -14,7 +14,7 @@ export interface UserData {
 export interface ProfileData {
     lastName: string
     secondLastName: string
-    mobile: number
+    mobile: string
     birthdate: string
 }
 

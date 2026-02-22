@@ -7,31 +7,29 @@ import {
   ListItemText,
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { ActionItem, DialogActionKey, getUserActionsByStatus } from '../interfaces/actionTypes.config.interface';
-
-import FormDialog from './FomDialog';
+import {
+  ActionItem,
+  DialogActionKey,
+  getUserActionsByStatus
+} from '../interfaces/actionTypes.config.interface';
 import ActionsDialog from './ActionsDialog';
 import { SocioRow } from '../interfaces/socio.interface';
 
 interface MenuListButtonProps {
   item: SocioRow;
-  onEditSubmit: (values: any, isEdit: boolean) => void;
+  onEdit: (item: SocioRow) => void; // ✅ nueva prop
   onConfirm: (action: DialogActionKey, item: SocioRow) => void;
 }
 
 export const MenuListButton: React.FC<MenuListButtonProps> = ({
   item,
-  onEditSubmit,
+  onEdit,
   onConfirm,
 }) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
-
   const [dialogOpen, setDialogOpen] = React.useState(false);
-  const [formDialogOpen, setFormDialogOpen] = React.useState(false);
-
-  const [isEdit, setIsEdit] = React.useState(false);
-  const [isShow, setIsShow] = React.useState(false);
   const [action, setAction] = React.useState<DialogActionKey | null>(null);
+
   const actions = React.useMemo(
     () => getUserActionsByStatus(item.status),
     [item.status]
@@ -39,9 +37,9 @@ export const MenuListButton: React.FC<MenuListButtonProps> = ({
 
   const handleActionClick = (actionItem: ActionItem) => {
     if (actionItem.type === 'form') {
-      setIsEdit(actionItem.key === 'Edit');
-      setIsShow(actionItem.key === 'Show');
-      setFormDialogOpen(true);
+      if (actionItem.key === 'Edit') {
+        onEdit(item); // delega al padre
+      }
       return;
     }
 
@@ -62,10 +60,12 @@ export const MenuListButton: React.FC<MenuListButtonProps> = ({
 
   return (
     <>
-      <IconButton onClick={(e) => {
-        e.stopPropagation();
-        setAnchorEl(e.currentTarget)
-      }}>
+      <IconButton
+        onClick={(e) => {
+          e.stopPropagation();
+          setAnchorEl(e.currentTarget);
+        }}
+      >
         <MoreVertIcon />
       </IconButton>
 
@@ -98,16 +98,6 @@ export const MenuListButton: React.FC<MenuListButtonProps> = ({
         onClose={handleDialogClose}
         onConfirm={handleConfirm}
       />
-      {/*
-
-      <FormDialog
-        openDialog={formDialogOpen}
-        onClose={() => setFormDialogOpen(false)}
-        isEdit={isEdit}
-        isShow={isShow}
-        item={item}
-        onSubmit={(values) => onEditSubmit(values, isEdit)}
-      /> */}
     </>
   );
 };

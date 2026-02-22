@@ -5,7 +5,7 @@ export const generateMockFormData = () => {
         userData: {
             name: faker.person.firstName(),
             email: faker.internet.email(),
-            roleId: faker.number.int({ min: 1, max: 3 }).toString(),
+            roleId: faker.number.int({ min: 1, max: 2 }).toString(),
         },
         profileData: {
             lastName: faker.person.lastName(),

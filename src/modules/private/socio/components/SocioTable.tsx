@@ -15,21 +15,19 @@ interface UsersTableProps {
   onSortModelChange: (model: GridSortModel) => void;
   onRowClick?: (row: SocioRow) => void;
   loading?: boolean;
+
+  // header
   onAdd: () => void;
-  // header props
   search: string;
   withTrashed: string;
   onSearchChange: (value: string) => void;
   onWithTrashedChange: (value: string) => void;
-  onEditSubmit: (values: any, isEdit: boolean) => void;
-  onConfirm: (action: DialogActionKey | null, item: SocioRow) => Promise<void>
+
+  // acciones
+  onEdit: (item: SocioRow) => void;
+  onConfirm: (action: DialogActionKey, item: SocioRow) => Promise<void>;
 }
 
-/**
- * Presentational SocioTable.
- * Columns are declared here. Paging/sorting handled by parent.
- * Header is imported and rendered here; handlers are forwarded from parent.
- */
 const SocioTable: React.FC<UsersTableProps> = ({
   socios,
   total,
@@ -40,33 +38,33 @@ const SocioTable: React.FC<UsersTableProps> = ({
   onRowClick,
   loading = false,
   onAdd,
-  // header props
   search,
   withTrashed,
   onSearchChange,
   onWithTrashedChange,
-  onEditSubmit,
+  onEdit,
   onConfirm,
 }) => {
 
-  const columnsTable = getColumnsTable (onEditSubmit,onConfirm);
+  const columns = React.useMemo(
+    () => getColumnsTable(onEdit, onConfirm),
+    [onEdit, onConfirm]
+  );
 
   return (
     <div>
-      {/* Header component  */}
       <HeaderTable
         search={search}
         withTrashed={withTrashed}
         onSearchChange={onSearchChange}
         onWithTrashedChange={onWithTrashedChange}
         onAdd={onAdd}
-        addLabel={"Add Socio"}
+        addLabel="Add Socio"
       />
 
-      {/* Table component */}
       <ReusableTable<SocioRow>
         rows={socios}
-        columns={columnsTable}
+        columns={columns}
         rowCount={total}
         paginationModel={paginationModel}
         onPaginationModelChange={onPaginationModelChange}

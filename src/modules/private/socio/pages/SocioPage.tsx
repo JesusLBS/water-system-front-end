@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import SocioService from '../services/socioService';
 import { useSocios } from '../hooks/useSocios';
 import { IndexQueryParams } from '../../../../interfaces/shared/index-params.interface';
@@ -9,6 +9,8 @@ import { GridPaginationModel, GridSortModel } from '@mui/x-data-grid';
 import { DialogActionKey } from '../interfaces/actionTypes.config.interface';
 import { showErrorToast, showSuccessToast } from '../../../../utils/toastNotifications';
 import FormDialog from '../components/FomDialog';
+import { buildSocioPayload } from '../mappers/socioPayload.mapper';
+import { generateUid } from '../../../../utils/generateUid';
 
 const socioService = new SocioService();
 
@@ -28,7 +30,10 @@ const SocioPage: React.FC = () => {
         setOpenDialog,
     } = useSocios();
 
-    // Debounce search
+    const [selectedItem, setSelectedItem] = React.useState<SocioRow | null>(null);
+    const [isEdit, setIsEdit] = React.useState(false);
+    const [reloadKey, setReloadKey] = useState(0);
+
     useEffect(() => {
         const t = setTimeout(() => setDebouncedSearch(tableState.search.trim()), 500);
         return () => clearTimeout(t);
@@ -39,7 +44,7 @@ const SocioPage: React.FC = () => {
 
         return {
             limit: tableState.pagination.pageSize,
-            page: tableState.pagination.page + 1, // API is 1-based
+            page: tableState.pagination.page + 1,
             sort: sortEntry?.field ?? 'createdAt',
             direction: sortEntry?.sort ?? 'desc',
             withTrashed: tableState.withTrashed,
@@ -64,7 +69,7 @@ const SocioPage: React.FC = () => {
         }
         fetchSocios();
         return () => { mounted = false; };
-    }, [apiParams]);
+    }, [apiParams, reloadKey]);
 
     const actionHandlers: Record<
         DialogActionKey,
@@ -103,36 +108,21 @@ const SocioPage: React.FC = () => {
         setTableState(prev => ({ ...prev, withTrashed }));
     };
 
-    const handleOpenDialog = () => setOpenDialog(true);
-
     const handleCloseDialog = () => {
         setOpenDialog(false);
     };
 
-    const generateUid = (length = 16) =>
-        Math.random().toString(36).substring(2, 2 + length);
-
-    const refreshTable = () => {
-        setTableState(prev => ({
-            ...prev,
-            pagination: { ...prev.pagination }
-        }));
-    };
-
     const handleFormSubmit = async (values: any, isEdit: boolean) => {
         try {
-            const payload = {
-                ...values,
-                userData: {
-                    ...values.userData,
-                    uid: generateUid()
-                }
-            }
-            //console.log('Payload:');
+            const payload = buildSocioPayload(values, {
+                isEdit,
+                uid: selectedItem?.uid,
+                generateUid
+            });
             //console.log(JSON.stringify(payload, null, 2));
             const response = isEdit
                 ? await socioService.update(payload)
-                : await socioService.store({ ...payload });
+                : await socioService.store(payload);
 
             if (!response.ok) {
                 showErrorToast(
@@ -150,14 +140,23 @@ const SocioPage: React.FC = () => {
             );
 
             setOpenDialog(false);
-            refreshTable();
+            setReloadKey(prev => prev + 1);
         } catch (error) {
-            console.error(error);
             showErrorToast('Error inesperado al guardar el socio');
         }
     };
 
+    const handleEdit = (item: SocioRow) => {
+        setSelectedItem(item);
+        setIsEdit(true);
+        setOpenDialog(true);
+    };
 
+    const handleCreate = () => {
+        setSelectedItem(null);
+        setIsEdit(false);
+        setOpenDialog(true);
+    };
 
     const handleOnConfirm = async (
         action: DialogActionKey | null,
@@ -174,9 +173,8 @@ const SocioPage: React.FC = () => {
             }
 
             showSuccessToast(successMessages[action]);
-            refreshTable();
+            setReloadKey(prev => prev + 1);
         } catch (error) {
-            console.error(error);
             showErrorToast('Unexpected error');
         }
     };
@@ -197,15 +195,15 @@ const SocioPage: React.FC = () => {
                 withTrashed={tableState.withTrashed}
                 onSearchChange={handleSearchChange}
                 onWithTrashedChange={handleWithTrashedChange}
-                onAdd={handleOpenDialog}
-                onEditSubmit={handleFormSubmit}
+                onAdd={handleCreate}
+                onEdit={handleEdit}
                 onConfirm={handleOnConfirm}
             />
-
             <FormDialog
                 openDialog={openDialog}
                 onClose={handleCloseDialog}
-                isEdit={false}
+                isEdit={isEdit}
+                item={selectedItem ?? undefined}
                 onSubmit={handleFormSubmit}
             />
         </div>

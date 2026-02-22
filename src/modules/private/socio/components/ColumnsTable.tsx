@@ -4,11 +4,9 @@ import { DialogActionKey } from '../interfaces/actionTypes.config.interface';
 import { SocioRow } from '../interfaces/socio.interface';
 import { MenuListButton } from './MenuListButton';
 
-
 export const getColumnsTable = (
-    onEditSubmit: (values: any, isEdit: boolean) => void,
-
-    onConfirm: (action: DialogActionKey | null, item: SocioRow) => Promise<void>
+    onEdit: (item: SocioRow) => void,
+    onConfirm: (action: DialogActionKey, item: SocioRow) => Promise<void>
 ): GridColDef<SocioRow>[] => [
         { field: 'uid', headerName: 'UUID', flex: 1, minWidth: 150 },
         { field: 'fullName', headerName: 'Name', flex: 1, minWidth: 150 },
@@ -34,7 +32,11 @@ export const getColumnsTable = (
             filterable: false,
             width: 120,
             renderCell: (params) => (
-                <MenuListButton item={params.row} onEditSubmit={onEditSubmit} onConfirm={onConfirm} />
+                <MenuListButton
+                    item={params.row}
+                    onEdit={onEdit}
+                    onConfirm={onConfirm}
+                />
             ),
         },
     ];

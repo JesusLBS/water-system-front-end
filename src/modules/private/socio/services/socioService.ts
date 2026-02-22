@@ -1,7 +1,7 @@
 import { IndexQueryParams } from "../../../../interfaces/shared/index-params.interface";
 import httpRequestService from "../../../../shared/services/api/httpRequestService";
 import { ApiResponse } from "../../../../interfaces/shared/api-response.interface";
-import { SociosResponse } from "../interfaces/socio.interface";
+import { SocioDetailResponse, SociosResponse } from "../interfaces/socio.interface";
 import { ActionsPayload } from "../../../../interfaces/shared/actions.interface";
 import { PayloadRoot } from "../interfaces/payload.interface";
 
@@ -51,6 +51,18 @@ export default class SocioService {
             this.url,
             payload
         );
+
+        if (!response.data) {
+            throw new Error('Response missing data');
+        }
+        return response.data;
+    }
+
+    async edit(uid: string): Promise<ApiResponse> {
+
+        const endpoint = `${this.url}/${uid}`;
+
+        const response = await httpRequestService.get<SocioDetailResponse>(endpoint);
 
         if (!response.data) {
             throw new Error('Response missing data');

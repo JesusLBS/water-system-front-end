@@ -6,6 +6,8 @@ import { roles } from '../mockData/mockData';
 import { generateMockFormData } from '../mockData/mockGenerator';
 
 interface StepperProps {
+    mode: 'create' | 'edit';
+    initialData?: any;
     onSubmit: (data: any) => void;
 }
 
@@ -50,20 +52,32 @@ const validationSchemas = [
     })
 ];
 
-const FormStepper: React.FC<StepperProps> = ({ onSubmit }) => {
-    const [formData, setFormData] = useState(() =>
-        useMock
-            ? generateMockFormData()
-            : {
-                userData: { name: '', email: '', roleId: '' },
-                profileData: { lastName: '', secondLastName: '', mobile: '', birthdate: '' },
-                addressData: { address: '', city: '' },
-            }
-    );
+const emptyData = {
+    userData: { name: '', email: '', roleId: '' },
+    profileData: { lastName: '', secondLastName: '', mobile: '', birthdate: '' },
+    addressData: { address: '', city: '' },
+};
+
+const FormStepper: React.FC<StepperProps> = ({ mode,
+    initialData,
+    onSubmit }) => {
+    const [formData, setFormData] = useState(() => {
+
+        if (mode === 'edit' && initialData) {
+            return initialData;
+        }
+
+        if (mode === 'create' && useMock) {
+            return generateMockFormData();
+        }
+
+        return emptyData;
+    });
 
     const [activeStep, setActiveStep] = useState(0);
 
     const isLastStep = activeStep === steps.length - 1;
+
     const cleanData = (data: any) => {
         return {
             userData: {
