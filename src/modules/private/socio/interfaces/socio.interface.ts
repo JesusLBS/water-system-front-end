@@ -13,12 +13,13 @@ export interface SocioRow {
 }
 
 export interface SocioResponseDTO {
-  userData: {
+  user: {
     uid: string;
     name: string;
     email: string;
+    roleId: number;
   };
-  profileData: {
+  profile: {
     lastName: string;
     secondLastName: string;
     mobile: string;
@@ -26,11 +27,16 @@ export interface SocioResponseDTO {
     age: number;
     totalDependents: number;
   };
-  addressData: {
+  address: {
     address: string;
     city: string;
     country: string;
   };
+  waterTake: {
+    waterTakeId: number;
+    waterLineId: number;
+    waterLineName: string;
+  }
 }
 
 export type SociosResponse = IndexResponse<SocioRow>;
