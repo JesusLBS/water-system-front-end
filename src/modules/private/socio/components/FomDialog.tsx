@@ -48,20 +48,20 @@ const FormDialog: React.FC<FormDialogProps> = ({
                 const data = response.data;
                 const mappedData = {
                     userData: {
-                        uid: data.userData.uid,
-                        name: data.userData.name,
-                        email: data.userData.email,
+                        uid: data.user.uid,
+                        name: data.user.name,
+                        email: data.user.email,
                         roleId: '1'
                     },
                     profileData: {
-                        lastName: data.profileData.lastName,
-                        secondLastName: data.profileData.secondLastName,
-                        mobile: data.profileData.mobile,
-                        birthdate: data.profileData.birthdate
+                        lastName: data.profile.lastName,
+                        secondLastName: data.profile.secondLastName,
+                        mobile: data.profile.mobile,
+                        birthdate: data.profile.birthdate
                     },
                     addressData: {
-                        address: data.addressData.address,
-                        city: data.addressData.city
+                        address: data.address.address,
+                        city: data.address.city
                     }
                 };
 

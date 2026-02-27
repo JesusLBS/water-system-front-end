@@ -36,6 +36,7 @@ export interface SocioResponseDTO {
     waterTakeId: number;
     waterLineId: number;
     waterLineName: string;
+    isSuspended: boolean;
   }
 }
 

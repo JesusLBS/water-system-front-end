@@ -183,7 +183,7 @@ const SocioPage: React.FC = () => {
     const navigate = useNavigate();
 
     const handleDetail = (item: SocioRow) => {
-        navigate(`/private/socios/${item.uid}`);
+        navigate(`/private/socios/detail/${item.uid}`);
     };
 
     return (

@@ -6,7 +6,7 @@ const SocioRoutes: React.FC = () => {
   return (
     <Routes>
       <Route index element={<SocioPage />} />
-      <Route path=":uid" element={<SocioDetailPage />} />
+      <Route path="detail/:uid" element={<SocioDetailPage />} />
       <Route path="*" element={<Navigate to="." />} />
     </Routes>
   );

@@ -6,8 +6,6 @@ import {
     Paper,
     Divider,
     CircularProgress,
-    Chip,
-    Avatar,
     Tabs,
     Tab,
 } from '@mui/material';
@@ -18,8 +16,9 @@ import ProfileInfoFields from '../components/form-sections/ProfileInfoFields';
 import AddressInfoFields from '../components/form-sections/AddressInfoFields';
 import { SocioDetailResponse, SocioResponseDTO } from '../interfaces/socio.interface';
 import SocioService from '../services/socioService';
-import Grid from '@mui/material/Grid2';
-import { PersonPinCircleOutlined } from '@mui/icons-material';
+import SocioDetailHeader from '../components/SocioDetailHeader';
+import WaterLineActionPanel, { WaterTakeState } from '../components/water-line/WaterLineActionPanel';
+import { showErrorToast, showSuccessToast } from '../../../../utils/toastNotifications';
 
 const socioService = new SocioService();
 
@@ -30,7 +29,7 @@ const SocioDetailPage: React.FC = () => {
     const [data, setData] = useState<SocioResponseDTO | null>(null);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState(0);
-
+    const [panelOpen, setPanelOpen] = useState(false);
     const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
         setActiveTab(newValue);
     };
@@ -70,136 +69,28 @@ const SocioDetailPage: React.FC = () => {
     }
 
     const fullName = `${data.user.name} ${data.profile.lastName} ${data.profile.secondLastName}`;
-
+    const mappedWaterTake: WaterTakeState =
+        data.waterTake?.waterTakeId
+            ? {
+                status: 'assigned',
+                waterTakeId: data.waterTake.waterTakeId,
+                waterLineId: data.waterTake.waterLineId!,
+                waterLineName: data.waterTake.waterLineName!,
+                isSuspended: data.waterTake.isSuspended!,
+            }
+            : {
+                status: 'empty',
+                isSuspended: data.waterTake.isSuspended!,
+            };
     return (
         <Box p={3}>
             {/* HEADER */}
-            <Paper
-                sx={{
-                    p: 4,
-                    mb: 3,
-                    width: '100%',
-                    borderLeft: '6px solid',
-                    borderColor: 'primary.main',
-                    borderRadius: 2,
-                }}
-            >
-                <Grid container spacing={3} alignItems="center">
-                    <Grid size={{ xs: 12, md: 2 }} display="flex" justifyContent="center">
-                        <Avatar
-                            sx={{
-                                width: 90,
-                                height: 90,
-                                fontSize: 32,
-                                bgcolor: 'primary.main',
-                            }}
-                        >
-                            {data.user.name
-                                ? data.user.name.charAt(0).toUpperCase()
-                                : <PersonPinCircleOutlined />}
-                        </Avatar>
-                    </Grid>
-
-                    <Grid size={{ xs: 12, md: 6 }}
-                    >
-                        <Typography
-                            fontWeight={600}
-                            sx={{
-                                fontSize: {
-                                    xs: '1.5rem',
-                                    sm: '1.75rem',
-                                    md: '2.2rem',
-                                },
-                                lineHeight: 1.2,
-                                wordBreak: 'break-word',
-                            }}
-                        >
-                            {fullName}
-                        </Typography>
-
-                        <Box
-                            mt={{ xs: 1.5, md: 1 }}
-                            display="flex"
-                            gap={1.5}
-                            flexWrap="wrap"
-                        >
-                            <Chip
-                                label={`UID: ${data.user.uid.slice(0, 8)}`}
-                                size="small"
-                                variant="outlined"
-                            />
-
-                            {data.waterTake ? (
-                                <Chip
-                                    label={`Línea: ${data.waterTake.waterLineName}`}
-                                    size="small"
-                                    color="success"
-                                />
-                            ) : (
-                                <Chip
-                                    label="Línea no asignada"
-                                    size="small"
-                                    color="warning"
-                                />
-                            )}
-                        </Box>
-                    </Grid>
-
-                    <Grid
-                        size={{ xs: 12, md: 4 }}
-                        sx={{
-                            display: 'flex',
-                            flexDirection: { xs: 'column', md: 'row' },
-                            justifyContent: { xs: 'center', md: 'flex-end' },
-                            alignItems: { xs: 'stretch', md: 'center' },
-                            gap: { xs: 2, md: 4 },
-                        }}
-                    >
-                        <Box
-                            display="flex"
-                            justifyContent={{ xs: 'space-around', md: 'flex-end' }}
-                            gap={{ xs: 2, md: 4 }}
-                        >
-                            <Box textAlign="center">
-                                <Typography variant="caption" color="text.secondary">
-                                    Edad
-                                </Typography>
-                                <Typography
-                                    fontWeight={700}
-                                    sx={{ fontSize: { xs: '1.1rem', md: '1.5rem' } }}
-                                >
-                                    {data.profile.age}
-                                </Typography>
-                            </Box>
-
-                            <Box textAlign="center">
-                                <Typography variant="caption" color="text.secondary">
-                                    Dependientes
-                                </Typography>
-                                <Typography
-                                    fontWeight={700}
-                                    sx={{ fontSize: { xs: '1.1rem', md: '1.5rem' } }}
-                                >
-                                    {data.profile.totalDependents}
-                                </Typography>
-                            </Box>
-                        </Box>
-
-                        <Button
-                            variant="contained"
-                            size="small"
-                            onClick={handleBack}
-                            sx={{
-                                alignSelf: { xs: 'center', md: 'auto' },
-                                width: { xs: '100%', md: 'auto' },
-                            }}
-                        >
-                            Regresar
-                        </Button>
-                    </Grid>
-                </Grid>
-            </Paper>
-
+            <SocioDetailHeader
+                data={data}
+                fullName={fullName}
+                onBack={handleBack}
+                onWaterLineAction={() => setPanelOpen(true)}
+            />
             {/* FORM + TABS */}
             <Formik
                 enableReinitialize
@@ -315,7 +206,24 @@ const SocioDetailPage: React.FC = () => {
                     );
                 }}
             </Formik>
+            <WaterLineActionPanel
+                open={panelOpen}
+                onClose={() => setPanelOpen(false)}
+                socioUid={data.user.uid}
+                waterTake={mappedWaterTake}
+                onSuccess={async () => {
+                    if (!uid) {
+                        showErrorToast('Unexpected error');
+                        return;
+                    }
+
+                    const response: SocioDetailResponse = await socioService.edit(uid);
+                    setData(response.data);
+                    showSuccessToast("Acción realizada exitosamente!");
+                }}
+            />
         </Box>
+
     );
 };
 

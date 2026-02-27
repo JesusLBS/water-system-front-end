@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
-type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
+type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 type HttpClient = 'axios' | 'fetch';
 
 interface RequestOptions {
@@ -64,9 +64,20 @@ const httpRequestService = {
                 status: response.status,
                 ...(response.data !== undefined && { data: response.data }),
             };
-        } catch (error) {
+        } catch (error: any) {
             console.error('Axios Request Error:', error);
-            throw error;
+            if (error.response) {
+                throw {
+                    status: error.response.status,
+                    message: error.response.data?.message ?? 'Request error',
+                    data: error.response.data,
+                };
+            }
+
+            throw {
+                status: 500,
+                message: 'Network error',
+            };
         }
     },
 
@@ -156,6 +167,15 @@ const httpRequestService = {
         client: HttpClient = 'axios'
     ): Promise<HttpResponse<T>> {
         return this.request<T>({ url, method: 'DELETE', headers, client });
+    },
+
+    patch<T>(
+        url: string,
+        data?: any,
+        headers?: Record<string, string>,
+        client: HttpClient = 'axios'
+    ): Promise<HttpResponse<T>> {
+        return this.request<T>({ url, method: 'PATCH', data, headers, client });
     },
 };
 
