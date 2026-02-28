@@ -4,10 +4,9 @@ import UserPage from '../pages/UserPage';
 
 const UserRoutes: React.FC = () => {
   return (
-
     <Routes>
-      <Route path="users" element={<UserPage />} />
-      <Route path="*" element={<Navigate to="/private/users" />} />
+      <Route index element={<UserPage />} />
+      <Route path="*" element={<Navigate to="." />} />
     </Routes>
   );
 };

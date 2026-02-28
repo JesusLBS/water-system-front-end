@@ -42,6 +42,12 @@ export const getColumnsTable = (
                 ),
         },
         {
+            field: 'createdAt', headerName: 'Creado', flex: 0.7, minWidth: 120,
+        },
+        {
+            field: 'updatedAt', headerName: 'Actualizado', flex: 0.7, minWidth: 120,
+        },
+        {
             field: 'actions',
             headerName: 'Actions',
             sortable: false,
