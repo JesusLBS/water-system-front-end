@@ -19,6 +19,8 @@ import SocioService from '../services/socioService';
 import SocioDetailHeader from '../components/SocioDetailHeader';
 import WaterLineActionPanel, { WaterTakeState } from '../components/water-line/WaterLineActionPanel';
 import { showErrorToast, showSuccessToast } from '../../../../utils/toastNotifications';
+import DependentPage from '../components/dependents/Dependent';
+import { buildFullName } from '../../../../utils/displayValue';
 
 const socioService = new SocioService();
 
@@ -68,7 +70,12 @@ const SocioDetailPage: React.FC = () => {
         return <Typography>No data found</Typography>;
     }
 
-    const fullName = `${data.user.name} ${data.profile.lastName} ${data.profile.secondLastName}`;
+    const fullName = buildFullName(
+        data.user.name,
+        data.profile.lastName,
+        data.profile.secondLastName
+    );
+
     const mappedWaterTake: WaterTakeState =
         data.waterTake?.waterTakeId
             ? {
@@ -143,39 +150,8 @@ const SocioDetailPage: React.FC = () => {
                         },
                         {
                             label: 'Dependientes',
-                            component: (
-                                <>
-                                    <Typography variant="h6" gutterBottom>
-                                        Dependientes
-                                    </Typography>
-                                    <Divider sx={{ mb: 2 }} />
-
-                                    <Typography variant="body2" color="text.secondary" mb={2}>
-                                        Aquí se listarán los dependientes asociados al socio.
-                                    </Typography>
-
-                                    <Box display="flex" justifyContent="flex-end" mb={2}>
-                                        <Button variant="contained" size="small">
-                                            Agregar Dependiente
-                                        </Button>
-                                    </Box>
-
-                                    <Paper
-                                        sx={{
-                                            p: 3,
-                                            textAlign: 'center',
-                                            bgcolor: 'grey.50',
-                                            border: '1px dashed',
-                                            borderColor: 'grey.300',
-                                        }}
-                                    >
-                                        <Typography variant="body2" color="text.secondary">
-                                            Tabla de dependientes pendiente de implementación.
-                                        </Typography>
-                                    </Paper>
-                                </>
-                            ),
-                        },
+                            component: <DependentPage />,
+                        }
                     ];
 
                     return (

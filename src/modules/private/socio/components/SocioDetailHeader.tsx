@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import { PersonPinCircleOutlined } from '@mui/icons-material';
+import { displayValue } from '../../../../utils/displayValue';
 
 interface Props {
     data: any;
@@ -53,7 +54,7 @@ const SocioDetailHeader: React.FC<Props> = ({
                         }}
                     >
                         {data.user.name
-                            ? data.user.name.charAt(0).toUpperCase()
+                            ? displayValue(data.user.name.charAt(0).toUpperCase())
                             : <PersonPinCircleOutlined />}
                     </Avatar>
                 </Grid>
@@ -82,21 +83,20 @@ const SocioDetailHeader: React.FC<Props> = ({
                         flexWrap="wrap"
                     >
                         <Chip
-                            label={`UID: ${data.user.uid.slice(0, 8)}`}
+                            label={`UID: ${displayValue(data.user.uid.slice(0, 8))}`}
                             size="small"
                             variant="outlined"
                         />
 
                         {hasWaterLine && !isSuspended ? (
                             <Chip
-                                label={`Línea: ${data.waterTake.waterLineName}`}
+                                label={`Línea: ${displayValue(data.waterTake.waterLineName)}`}
                                 size="small"
                                 color="success"
                             />
                         ) : (
                             <Chip
                                 label={`Línea: ${isSuspended ? 'Suspendida' : 'no asignada'}`}
-                                //label="Línea no asignada"
                                 size="small"
                                 color="warning"
                             />
@@ -129,7 +129,8 @@ const SocioDetailHeader: React.FC<Props> = ({
                                 fontWeight={700}
                                 sx={{ fontSize: { xs: '1.1rem', md: '1.5rem' } }}
                             >
-                                {data.profile.age}
+
+                                {displayValue(data.profile.age)}
                             </Typography>
                         </Box>
 
@@ -141,7 +142,7 @@ const SocioDetailHeader: React.FC<Props> = ({
                                 fontWeight={700}
                                 sx={{ fontSize: { xs: '1.1rem', md: '1.5rem' } }}
                             >
-                                {data.profile.totalDependents}
+                                {displayValue(data.profile.totalDependents)}
                             </Typography>
                         </Box>
                     </Box>
