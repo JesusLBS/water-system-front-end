@@ -7,6 +7,8 @@ import {
 } from '../interfaces/socio.interface';
 import SocioService from '../services/socioService';
 import { GridCloseIcon } from '@mui/x-data-grid';
+import { mapSocioDetailToForm } from '../mappers/socio.mapper';
+import { SocioFormModel } from '../interfaces/payload.interface';
 
 interface FormDialogProps {
     openDialog: boolean;
@@ -26,7 +28,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
     onSubmit
 }) => {
 
-    const [initialData, setInitialData] = useState<any>(undefined);
+    const [initialData, setInitialData] = useState<SocioFormModel | undefined>(undefined);
     const mode: 'create' | 'edit' = isEdit ? 'edit' : 'create';
 
     useEffect(() => {
@@ -45,28 +47,8 @@ const FormDialog: React.FC<FormDialogProps> = ({
             try {
                 const response: SocioDetailResponse =
                     await socioService.edit(item.uid);
-                const data = response.data;
-                const mappedData = {
-                    userData: {
-                        uid: data.user.uid,
-                        name: data.user.name,
-                        email: data.user.email,
-                        roleId: '1'
-                    },
-                    profileData: {
-                        lastName: data.profile.lastName,
-                        secondLastName: data.profile.secondLastName,
-                        mobile: data.profile.mobile,
-                        birthdate: data.profile.birthdate
-                    },
-                    addressData: {
-                        address: data.address.address,
-                        city: data.address.city
-                    }
-                };
-
+                const mappedData = mapSocioDetailToForm(response.data)
                 setInitialData(mappedData);
-
             } catch (error) {
                 console.error('Error fetching socio detail', error);
             }
@@ -109,7 +91,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
 
             <Box sx={{ padding: 2 }}>
                 <FormStepper
-                    key={initialData?.userData?.uid || 'create'}
+                    key={initialData?.user?.uid || 'create'}
                     mode={mode}
                     initialData={isEdit ? initialData : undefined}
                     onSubmit={handleFormSubmit}

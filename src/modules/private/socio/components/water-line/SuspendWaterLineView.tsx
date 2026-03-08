@@ -16,14 +16,13 @@ type WaterTakeAssigned = {
 };
 
 interface Props {
-    socioUid: string;
+    socioUid?: string;
     waterTake: WaterTakeAssigned;
     onSuccess: () => void;
     onClose: () => void;
 }
 
 const SuspendWaterLineView: React.FC<Props> = ({
-    socioUid,
     waterTake,
     onSuccess,
     onClose,

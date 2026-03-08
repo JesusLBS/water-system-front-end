@@ -20,24 +20,24 @@ export interface SocioResponseDTO {
     roleId: number;
   };
   profile: {
-    lastName: string;
-    secondLastName: string;
-    mobile: string;
-    birthdate: string;
-    age: number;
-    totalDependents: number;
+    lastName: string | null;
+    secondLastName: string | null;
+    mobile: string | null;
+    birthdate: string | null;
+    age: number | null;
+    totalDependents: number | null;
   };
   address: {
-    address: string;
-    city: string;
-    country: string;
+    address: string | null;
+    city: string | null;
+    country: string | null;
   };
   waterTake: {
     waterTakeId: number;
     waterLineId: number;
     waterLineName: string;
     isSuspended: boolean;
-  }
+  };
 }
 
 export type SociosResponse = IndexResponse<SocioRow>;

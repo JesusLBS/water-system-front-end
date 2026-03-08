@@ -8,4 +8,8 @@ export const roles = [
         id: 2,
         description: 'admin',
     },
+    {
+        id: 3,
+        description: 'socio',
+    },
 ];

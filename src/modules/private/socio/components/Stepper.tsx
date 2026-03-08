@@ -35,9 +35,9 @@ const validationSchemas = [
 ];
 
 const emptyData = {
-    userData: { name: '', email: '', roleId: '' },
-    profileData: { lastName: '', secondLastName: '', mobile: '', birthdate: '' },
-    addressData: { address: '', city: '' },
+    user: { name: '', email: '', roleId: '' },
+    profile: { lastName: '', secondLastName: '', mobile: '', birthdate: '' },
+    address: { address: '', city: '' },
 };
 
 const FormStepper: React.FC<StepperProps> = ({
@@ -55,17 +55,17 @@ const FormStepper: React.FC<StepperProps> = ({
     const isLastStep = activeStep === steps.length - 1;
 
     const cleanData = (data: any) => ({
-        userData: { ...data.userData },
-        profileData: { ...data.profileData },
-        addressData: { ...data.addressData },
+        userData: { ...data.user },
+        profileData: { ...data.profile },
+        addressData: { ...data.address },
     });
 
     const handleNext = (values: any) => {
         const updatedData = {
             ...formData,
-            ...(activeStep === 0 && { userData: { ...values } }),
-            ...(activeStep === 1 && { profileData: { ...values } }),
-            ...(activeStep === 2 && { addressData: { ...values } }),
+            ...(activeStep === 0 && { user: { ...values } }),
+            ...(activeStep === 1 && { profile: { ...values } }),
+            ...(activeStep === 2 && { address: { ...values } }),
         };
 
         setFormData(updatedData);
@@ -105,9 +105,9 @@ const FormStepper: React.FC<StepperProps> = ({
             <Formik
                 enableReinitialize
                 initialValues={{
-                    ...formData.userData,
-                    ...formData.profileData,
-                    ...formData.addressData,
+                    ...formData.user,
+                    ...formData.profile,
+                    ...formData.address,
                 }}
                 validationSchema={validationSchemas[activeStep]}
                 onSubmit={handleNext}

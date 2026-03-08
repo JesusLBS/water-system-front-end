@@ -2,12 +2,12 @@ import { faker } from '@faker-js/faker';
 
 export const generateMockFormData = () => {
     return {
-        userData: {
+        user: {
             name: faker.person.firstName(),
             email: faker.internet.email(),
             roleId: faker.number.int({ min: 1, max: 2 }).toString(),
         },
-        profileData: {
+        profile: {
             lastName: faker.person.lastName(),
             secondLastName: faker.person.lastName(),
             mobile: '55' + faker.string.numeric(8),
@@ -15,7 +15,7 @@ export const generateMockFormData = () => {
                 .toISOString()
                 .split('T')[0],
         },
-        addressData: {
+        address: {
             address: faker.location.streetAddress(),
             city: faker.location.city(),
         },

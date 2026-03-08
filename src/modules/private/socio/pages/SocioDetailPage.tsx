@@ -14,21 +14,23 @@ import { Formik, Form } from 'formik';
 import UserInfoFields from '../components/form-sections/UserInfoFields';
 import ProfileInfoFields from '../components/form-sections/ProfileInfoFields';
 import AddressInfoFields from '../components/form-sections/AddressInfoFields';
-import { SocioDetailResponse, SocioResponseDTO } from '../interfaces/socio.interface';
+import { SocioDetailResponse } from '../interfaces/socio.interface';
 import SocioService from '../services/socioService';
 import SocioDetailHeader from '../components/SocioDetailHeader';
 import WaterLineActionPanel, { WaterTakeState } from '../components/water-line/WaterLineActionPanel';
 import { showErrorToast, showSuccessToast } from '../../../../utils/toastNotifications';
 import DependentPage from '../components/dependents/Dependent';
 import { buildFullName } from '../../../../utils/displayValue';
+import { mapSocioDetailToForm } from '../mappers/socio.mapper';
+import { SocioFormModel } from '../interfaces/payload.interface';
 
 const socioService = new SocioService();
 
 const SocioDetailPage: React.FC = () => {
     const { uid } = useParams();
     const navigate = useNavigate();
-
-    const [data, setData] = useState<SocioResponseDTO | null>(null);
+    const socioUid = uid ?? "";
+    const [data, setData] = useState<SocioFormModel | null>(null);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState(0);
     const [panelOpen, setPanelOpen] = useState(false);
@@ -46,7 +48,8 @@ const SocioDetailPage: React.FC = () => {
                 if (!uid) return;
 
                 const response: SocioDetailResponse = await socioService.edit(uid);
-                setData(response.data);
+                const mappedData = mapSocioDetailToForm(response.data);
+                setData(mappedData);
             } catch (error) {
                 console.error('Error loading socio detail', error);
             } finally {
@@ -150,7 +153,7 @@ const SocioDetailPage: React.FC = () => {
                         },
                         {
                             label: 'Dependientes',
-                            component: <DependentPage />,
+                            component: <DependentPage uid={socioUid} />,
                         }
                     ];
 
@@ -194,7 +197,8 @@ const SocioDetailPage: React.FC = () => {
                     }
 
                     const response: SocioDetailResponse = await socioService.edit(uid);
-                    setData(response.data);
+                    const mappedData = mapSocioDetailToForm(response.data);
+                    setData(mappedData);
                     showSuccessToast("Acción realizada exitosamente!");
                 }}
             />

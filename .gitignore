@@ -108,3 +108,5 @@ _ide_helper_services.php
 !.yarn/plugins
 !.yarn/sdks
 !.yarn/versions
+
+*.tsbuildinfo

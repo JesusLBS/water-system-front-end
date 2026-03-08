@@ -1,42 +1,67 @@
-import React, { useState } from 'react'
-import { Box, Typography, Divider } from '@mui/material'
-import { GridPaginationModel, GridSortModel } from '@mui/x-data-grid'
-import { DefaultRow } from '../../../../../shared/components/DefaultColumns'
-import DependentTable from './DependentTable'
+import React, { useEffect, useState } from "react";
+import { Box, Typography, Divider, CircularProgress, Stack, Chip } from "@mui/material";
+import Grid from '@mui/material/Grid2';
+import { createDependentService } from "./services/dependentService";
+import { DependentRow, DependentsResponse } from "./interfaces/dependent.interface";
+import { useDependents } from "./hooks/useDependent";
+import DependentList from "./components/DependentList";
+import DependentForm from "./components/DependentForm";
+import { Meta } from "../../../../../interfaces/shared/index.interface";
+import { delay } from "../../../../../utils/async";
 
-const DependentPage: React.FC = () => {
+interface Props {
+    uid: string;
+}
 
-    const [dependents] = useState<DefaultRow[]>([])
+const DependentPage: React.FC<Props> = ({ uid }) => {
 
-    const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
-        page: 0,
-        pageSize: 10,
-    })
+    const {
+        dependents,
+        setDependents,
+        loading,
+        setLoading,
+        selected,
+        setSelected,
+    } = useDependents();
 
-    const [sortModel, setSortModel] = useState<GridSortModel>([])
+    const [meta, setMeta] = useState<Meta | null>(null);
+    const [reloadKey, setReloadKey] = useState(0);
 
-    const [search, setSearch] = useState('')
-    const [withTrashed, setWithTrashed] = useState('')
+    useEffect(() => {
 
-    const handleAdd = () => {
-        console.log('add dependent')
-    }
+        const fetchDependents = async () => {
+            setLoading(true);
 
-    const handleEdit = (item: DefaultRow) => {
-        console.log('edit', item)
-    }
+            try {
 
-    const handleDetail = (item: DefaultRow) => {
-        console.log('detail', item)
-    }
+                const response: DependentsResponse =
+                    await createDependentService(uid).index({});
 
-    const handleSearchChange = (value: string) => {
-        setSearch(value)
-    }
+                setDependents(response.data.rows);
+                setMeta(response.data.meta);
 
-    const handleWithTrashedChange = (value: string) => {
-        setWithTrashed(value)
-    }
+            } finally {
+                await delay();
+                setLoading(false);
+            }
+        };
+
+        fetchDependents();
+
+    }, [uid, reloadKey]);
+
+    const handleSelect = (item: DependentRow) => {
+        setSelected(item);
+    };
+
+    const handleCreate = () => {
+        setSelected(null);
+    };
+
+    const handleSaved = () => {
+        setSelected(null);
+        setReloadKey((prev) => prev + 1);
+    };
 
     return (
         <Box>
@@ -48,28 +73,54 @@ const DependentPage: React.FC = () => {
             <Divider sx={{ mb: 2 }} />
 
             <Typography variant="body2" color="text.secondary" mb={2}>
-                Aquí se listarán los dependientes asociados al socio.
+                Gestiona los dependientes asociados al socio.
             </Typography>
 
-            <DependentTable
-                dependents={dependents}
-                total={dependents.length}
-                paginationModel={paginationModel}
-                onPaginationModelChange={setPaginationModel}
-                sortModel={sortModel}
-                onSortModelChange={setSortModel}
-                onRowClick={(row) => console.log('row clicked', row)}
-                search={search}
-                withTrashed={withTrashed}
-                onSearchChange={handleSearchChange}
-                onWithTrashedChange={handleWithTrashedChange}
-                onAdd={handleAdd}
-                onEdit={handleEdit}
-                onDetail={handleDetail}
-            />
+            {meta && (
+                <Stack
+                    direction="row"
+                    spacing={2}
+                    mb={2}
+                    flexWrap="wrap"
+                    useFlexGap
+                >
+                    <Chip label={`Total: ${meta.total}`} />
+                    <Chip color="success" label={`Activos: ${meta.active}`} />
+                    <Chip color="default" label={`Inactivos: ${meta.inactive}`} />
+                </Stack>
+            )}
+
+            {loading ? (
+                <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    minHeight="300px"
+                >
+                    <CircularProgress />
+                </Box>
+            ) : (
+                <Grid container spacing={3}>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                        <DependentList
+                            dependents={dependents}
+                            onSelect={handleSelect}
+                            onCreate={handleCreate}
+                        />
+                    </Grid>
+
+                    <Grid size={{ xs: 12, md: 6 }}>
+                        <DependentForm
+                            socioUid={uid}
+                            dependent={selected}
+                            onSaved={handleSaved}
+                        />
+                    </Grid>
+                </Grid>
+            )}
 
         </Box>
-    )
-}
+    );
+};
 
-export default DependentPage
+export default DependentPage;
