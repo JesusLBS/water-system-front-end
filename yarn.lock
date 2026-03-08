@@ -1008,6 +1008,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@faker-js/faker@npm:^10.3.0":
+  version: 10.3.0
+  resolution: "@faker-js/faker@npm:10.3.0"
+  checksum: 10c0/5a4688f8a040366bda83e6c7f144f9db9bef1d44f7c5b43fcee15c8def07463fcdcb572458b0d14072aca58c14321f1195e11d8664ce094266e29eb4d2a70ac4
+  languageName: node
+  linkType: hard
+
 "@firebase/analytics-compat@npm:0.2.14":
   version: 0.2.14
   resolution: "@firebase/analytics-compat@npm:0.2.14"
@@ -6371,6 +6378,7 @@ __metadata:
     "@emotion/react": "npm:^11.13.3"
     "@emotion/styled": "npm:^11.13.0"
     "@eslint/js": "npm:^9.39.2"
+    "@faker-js/faker": "npm:^10.3.0"
     "@mui/icons-material": "npm:^6.0.2"
     "@mui/material": "npm:^6.0.2"
     "@mui/x-data-grid": "npm:^8.25.0"

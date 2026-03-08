@@ -1,20 +1,13 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import UserPage from '../pages/UserPage';
-import DashboardLayout from '../../../../shared/layouts/DashboardLayout';
 
-interface UserRoutesProps {
-  toggleTheme: () => void;
-  darkMode: boolean;
-}
 
-const UserRoutes: React.FC<UserRoutesProps> = ({ toggleTheme, darkMode }) => {
+const UserRoutes: React.FC = () => {
   return (
-    <DashboardLayout toggleTheme={toggleTheme} darkMode={darkMode}>
-      <Routes>
-        <Route path="users" element={<UserPage />} />
-        <Route path="*" element={<Navigate to="/private/users" />} />
-      </Routes>
-    </DashboardLayout>
+    <Routes>
+      <Route index element={<UserPage />} />
+      <Route path="*" element={<Navigate to="." />} />
+    </Routes>
   );
 };
 

@@ -1,21 +1,15 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import DashboardLayout from '../../../../shared/layouts/DashboardLayout';
 import SocioPage from '../pages/SocioPage';
+import SocioDetailPage from '../pages/SocioDetailPage';
 
-interface SocioRoutesProps {
-  toggleTheme: () => void;
-  darkMode: boolean;
-}
-
-const UserRoutes: React.FC<SocioRoutesProps> = ({ toggleTheme, darkMode }) => {
+const SocioRoutes: React.FC = () => {
   return (
-    <DashboardLayout toggleTheme={toggleTheme} darkMode={darkMode}>
-      <Routes>
-        <Route path="socios" element={<SocioPage />} />
-        <Route path="*" element={<Navigate to="/private/socios" />} />
-      </Routes>
-    </DashboardLayout>
+    <Routes>
+      <Route index element={<SocioPage />} />
+      <Route path="detail/:uid" element={<SocioDetailPage />} />
+      <Route path="*" element={<Navigate to="." />} />
+    </Routes>
   );
 };
 
-export default UserRoutes;
+export default SocioRoutes;

@@ -1,68 +1,74 @@
-import React from 'react';
+import * as React from 'react';
 import {
-    IconButton,
-    Menu,
-    MenuItem,
-    ListItemIcon,
-    ListItemText
+  IconButton,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
 } from '@mui/material';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {
-    MoreVert as MoreVertIcon,
-    Block as DeactivateIcon,
-    Delete as DeleteIcon,
-    Edit as EditIcon,
-    Visibility as VisibilityIcon
-} from '@mui/icons-material';
+  ActionItem,
+  DialogActionKey,
+  getUserActionsByStatus
+} from '../interfaces/actionTypes.config.interface';
 import ActionsDialog from './ActionsDialog';
-import FormDialog from './FomDialog';
+import { SocioRow } from '../interfaces/socio.interface';
 
 interface MenuListButtonProps {
-  item: { fullName: string; email: string; };
+  item: SocioRow;
+  onEdit: (item: SocioRow) => void;
+  onDetail: (item: SocioRow) => void;
+  onConfirm: (action: DialogActionKey, item: SocioRow) => void;
 }
 
-const MenuListButton: React.FC<MenuListButtonProps> = ({ item }) => {
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+export const MenuListButton: React.FC<MenuListButtonProps> = ({
+  item,
+  onEdit,
+  onDetail,
+  onConfirm,
+}) => {
+  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [dialogOpen, setDialogOpen] = React.useState(false);
-  const [formDialogOpen, setFormDialogOpen] = React.useState(false);
-  const [isEdit, setIsEdit] = React.useState(false);
-  const [action, setAction] = React.useState<string | null>(null);
+  const [action, setAction] = React.useState<DialogActionKey | null>(null);
 
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
+  const actions = React.useMemo(
+    () => getUserActionsByStatus(item.status),
+    [item.status]
+  );
 
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleActionClick = (selectedAction: string) => {
-    console.log('Selected Action:', selectedAction);
-    if (selectedAction === 'Deactivate' || selectedAction === 'Delete') {
-      setAction(selectedAction);
-      setDialogOpen(true);
-    } else if (selectedAction === 'Edit') {
-      console.log('Opening Form Dialog');
-      setFormDialogOpen(true);
-      setIsEdit(true);
+  const handleActionClick = (actionItem: ActionItem) => {
+    if (actionItem.type === 'form') {
+      if (actionItem.key === 'Edit') {
+        onEdit(item);
+      }
+      if (actionItem.key === 'Detail') {
+        onDetail(item);
+      }
+      return;
     }
-    handleMenuClose();
+
+    setAction(actionItem.key as DialogActionKey);
+    setDialogOpen(true);
   };
 
   const handleDialogClose = () => {
     setDialogOpen(false);
+    setAction(null);
   };
 
-  const handleFormDialogClose = () => {
-    setFormDialogOpen(false);
-    setIsEdit(false);
+  const handleConfirm = () => {
+    if (!action) return;
+    onConfirm(action, item);
+    handleDialogClose();
   };
 
   return (
-    <React.Fragment>
+    <>
       <IconButton
-        onClick={(event) => {
-          event.stopPropagation();
-          handleMenuOpen(event);
+        onClick={(e) => {
+          e.stopPropagation();
+          setAnchorEl(e.currentTarget);
         }}
       >
         <MoreVertIcon />
@@ -71,74 +77,32 @@ const MenuListButton: React.FC<MenuListButtonProps> = ({ item }) => {
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
+        onClose={() => setAnchorEl(null)}
       >
-        <MenuItem
-          onClick={(event) => {
-            event.stopPropagation();
-            handleActionClick('Deactivate');
-          }}
-        >
-          <ListItemIcon>
-            <DeactivateIcon />
-          </ListItemIcon>
-          <ListItemText>Deactivate</ListItemText>
-        </MenuItem>
-
-        <MenuItem
-          onClick={(event) => {
-            event.stopPropagation();
-            handleActionClick('Delete');
-          }}
-        >
-          <ListItemIcon>
-            <DeleteIcon />
-          </ListItemIcon>
-          <ListItemText>Delete</ListItemText>
-        </MenuItem>
-
-        <MenuItem
-          onClick={(event) => {
-            event.stopPropagation();
-            handleActionClick('Edit');
-          }}
-        >
-          <ListItemIcon>
-            <EditIcon />
-          </ListItemIcon>
-          <ListItemText>Edit</ListItemText>
-        </MenuItem>
-
-        <MenuItem
-          onClick={(event) => {
-            event.stopPropagation();
-            handleActionClick('Show');
-          }}
-        >
-          <ListItemIcon>
-            <VisibilityIcon />
-          </ListItemIcon>
-          <ListItemText>Show</ListItemText>
-        </MenuItem>
+        {actions.map((actionItem) => (
+          <MenuItem
+            key={actionItem.key}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleActionClick(actionItem);
+              setAnchorEl(null);
+            }}
+          >
+            <ListItemIcon>
+              <actionItem.Icon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>{actionItem.label}</ListItemText>
+          </MenuItem>
+        ))}
       </Menu>
 
-
-      {action && (
-        <ActionsDialog
-          open={dialogOpen}
-          onClose={handleDialogClose}
-          action={action}
-          item={item}
-        />
-      )}
-      <FormDialog
-        openDialog={formDialogOpen}
-        onClose={handleFormDialogClose}
-        isEdit={isEdit}
+      <ActionsDialog
+        open={dialogOpen}
+        action={action}
         item={item}
+        onClose={handleDialogClose}
+        onConfirm={handleConfirm}
       />
-    </React.Fragment>
+    </>
   );
 };
-
-export default MenuListButton;
