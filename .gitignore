@@ -99,3 +99,14 @@ _ide_helper_routes.php
 _ide_helper_services.php
 *.env*
 !*.env.example
+
+
+# Yarn
+.yarn/install-state.gz
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+
+*.tsbuildinfo

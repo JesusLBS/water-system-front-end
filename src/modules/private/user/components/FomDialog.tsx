@@ -1,0 +1,146 @@
+import React from 'react';
+import { Formik, Form, Field } from 'formik';
+import * as Yup from 'yup';
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    TextField,
+    MenuItem,
+    Radio,
+    RadioGroup,
+    FormControlLabel,
+    FormLabel,
+} from '@mui/material';
+import { roles } from '../mockData/mockData';
+import { UserRow } from '../interfaces/user.interface';
+
+const validationSchema = Yup.object({
+    name: Yup.string().required('Name is required'),
+    email: Yup.string().email('Please enter a valid email').required('Email is required'),
+    roleId: Yup.string().required('Role is required'),
+    active: Yup.boolean().required('Active status is required'),
+});
+
+interface FormDialogProps {
+    openDialog: boolean;
+    onClose: () => void;
+    isEdit: boolean;
+    isShow?: boolean;
+    item?: UserRow;
+    onSubmit: (data: any, isEdit: boolean) => void;
+}
+
+const FormDialog: React.FC<FormDialogProps> = ({ openDialog, onClose, isEdit, isShow, item, onSubmit }) => {
+
+    if (isEdit) {
+        //console.log(JSON.stringify(item, null, 2))
+    }
+
+    const initialValues = isEdit
+        ? {
+            name: item?.name,
+            email: item?.email,
+            roleId: '1',
+            active: item?.status === "active" ? true : false,
+            uid: item?.uid
+        }
+        : {
+            name: 'any',
+            email: 'any@example.com',
+            roleId: '',
+            active: false,
+        };
+
+    const handleFormSubmit = (values: any) => {
+        onSubmit(values, isEdit);
+    };
+
+    return (
+        <Dialog open={openDialog} onClose={onClose} disableRestoreFocus aria-labelledby="form-dialog-title">
+            {!isShow && <DialogTitle>{isEdit ? 'Edit User' : 'Add New User'}</DialogTitle>}
+            <Formik
+                initialValues={initialValues}
+                validationSchema={validationSchema}
+                onSubmit={handleFormSubmit}
+            >
+                {({ errors, touched, values, setFieldValue }) => (
+                    <Form>
+                        <DialogContent>
+                            <Field
+                                as={TextField}
+                                name="name"
+                                label="Name"
+                                fullWidth
+                                margin="dense"
+                                autoFocus
+                                disabled={isShow}
+                                error={touched.name && Boolean(errors.name)}
+                                helperText={touched.name && errors.name}
+                            />
+                            <Field
+                                as={TextField}
+                                name="email"
+                                label="Email"
+                                type="email"
+                                fullWidth
+                                margin="dense"
+                                disabled={isShow}
+                                error={touched.email && Boolean(errors.email)}
+                                helperText={touched.email && errors.email}
+                            />
+                            <Field
+                                as={TextField}
+                                name="roleId"
+                                label="Role"
+                                select
+                                fullWidth
+                                margin="dense"
+                                disabled={isShow}
+                                error={touched.roleId && Boolean(errors.roleId)}
+                                helperText={touched.roleId && errors.roleId}
+                            >
+                                <MenuItem value="" disabled>
+                                    Select role
+                                </MenuItem>
+                                {roles.map((role) => (
+                                    <MenuItem key={role.id} value={role.id}>
+                                        {role.description.charAt(0).toUpperCase() + role.description.slice(1)}
+                                    </MenuItem>
+                                ))}
+                            </Field>
+                            <FormLabel component="legend">Status</FormLabel>
+                            <RadioGroup
+                                name="active"
+                                value={values.active ? 'active' : 'inactive'}
+                                onChange={(event) => setFieldValue('active', event.target.value === 'active')}
+                                sx={{
+                                    display: 'flex',
+                                    justifyContent: 'start',
+                                    alignItems: 'center',
+                                    padding: 2,
+                                    flexDirection: {
+                                        xs: 'column',
+                                        sm: 'row',
+                                    },
+                                    gap: 2,
+                                }}
+                            >
+                                <FormControlLabel value="active" disabled={isShow} control={<Radio />} label="Active" />
+                                <FormControlLabel value="inactive" disabled={isShow} control={<Radio />} label="Inactive" />
+                            </RadioGroup>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={onClose}>{isShow ? 'Close' : 'Cancel'}</Button>
+                            {!isShow && <Button type="submit">{isEdit ? 'Save Changes' : 'Add User'}</Button>}
+                        </DialogActions>
+                    </Form>
+                )}
+            </Formik>
+        </Dialog>
+    );
+};
+
+export default FormDialog;

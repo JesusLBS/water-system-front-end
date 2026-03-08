@@ -1,35 +1,33 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import AuthRoutes from './modules/auth/routes/AuthRoutes';
+import DashboardRoutes from './modules/dashboard/routes/DashboardRoutes';
+import PrivateRoutes from './modules/private/routes/PrivateRoutes';
+import ProtectedRoute from './shared/components/ProtectedRoute';
+import PublicRoute from './shared/components/PublicRoute';
+import { ToastContainer } from 'react-toastify';
 
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+interface AppProps {
+  toggleTheme: () => void;
+  darkMode: boolean;
 }
 
-export default App
+const App: React.FC<AppProps> = ({ toggleTheme, darkMode }) => {
+  return (
+    <Router>
+      <ToastContainer />
+      <Routes>
+        <Route element={<PublicRoute />}>
+          <Route path="/auth/*" element={<AuthRoutes toggleTheme={toggleTheme} darkMode={darkMode} />} />
+        </Route>
+        <Route element={<ProtectedRoute />}>
+          <Route path="/dashboard/*" element={<DashboardRoutes toggleTheme={toggleTheme} darkMode={darkMode} />} />
+          <Route path="/private/*" element={<PrivateRoutes toggleTheme={toggleTheme} darkMode={darkMode} />} />
+        </Route>
+        <Route path="*" element={<Navigate to="/auth/login" />} />
+      </Routes>
+    </Router>
+  );
+};
+
+export default App;
