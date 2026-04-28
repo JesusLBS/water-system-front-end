@@ -4,6 +4,7 @@ import { ApiResponse } from "../../../../interfaces/shared/api-response.interfac
 import { WaterLineResponse } from "../interfaces/water-line";
 import { ActionsPayload } from "../../../../interfaces/shared/actions.interface";
 import { assertResponseData } from "../../../../utils/assertResponseData";
+import { WaterLinePayload } from "../interfaces/payload.interface";
 
 class WaterLineService {
     private url: string;
@@ -43,7 +44,7 @@ class WaterLineService {
         return assertResponseData(response.data, 'WaterLine.index');
     }
 
-    async store(payload: Partial<WaterLineResponse>): Promise<ApiResponse> {
+    async store(payload: WaterLinePayload): Promise<ApiResponse> {
         const response = await httpRequestService.post<ApiResponse>(
             this.url,
             payload
@@ -52,7 +53,7 @@ class WaterLineService {
         return assertResponseData(response.data, 'WaterLine.store');
     }
 
-    async update(payload: Partial<WaterLineResponse>): Promise<ApiResponse> {
+    async update(payload: WaterLinePayload): Promise<ApiResponse> {
         const response = await httpRequestService.put<ApiResponse>(
             this.url,
             payload

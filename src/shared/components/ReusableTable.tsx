@@ -41,7 +41,7 @@ function ReusableTable<T extends { uid: string }>({
       <DataGrid
         rows={rows}
         columns={columns}
-        getRowId={(row) => row.uid}
+        getRowId={(row) => row.uid ?? row.id ?? Math.random()}
         rowCount={rowCount}
         paginationMode="server"
         paginationModel={paginationModel}
