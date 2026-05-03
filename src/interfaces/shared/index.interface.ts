@@ -5,6 +5,7 @@ export interface IndexResponse<T> {
     data: {
         rows: T[];
         meta: Meta;
+        count?: number
     };
 }
 
