@@ -9,7 +9,7 @@ import {
     Tabs,
     Tab,
 } from '@mui/material';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { Formik, Form } from 'formik';
 import UserInfoFields from '../components/form-sections/UserInfoFields';
 import ProfileInfoFields from '../components/form-sections/ProfileInfoFields';
@@ -28,6 +28,8 @@ const socioService = new SocioService();
 
 const SocioDetailPage: React.FC = () => {
     const { uid } = useParams();
+    const [searchParams] = useSearchParams();
+    const from = searchParams.get('from');
     const navigate = useNavigate();
     const socioUid = uid ?? "";
     const [data, setData] = useState<SocioFormModel | null>(null);
@@ -39,6 +41,11 @@ const SocioDetailPage: React.FC = () => {
     };
 
     const handleBack = () => {
+        if (from === 'water-line') {
+            navigate('/private/water-lines');
+            return;
+        }
+
         navigate('/private/socios');
     };
 

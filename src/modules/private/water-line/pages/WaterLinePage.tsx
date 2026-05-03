@@ -6,12 +6,13 @@ import { WaterLineRow, WaterLineResponse } from '../interfaces/water-line';
 import { ReusableStatsCards } from '../../../../shared/components/ReusableStatsCards';
 import { GridPaginationModel, GridSortModel } from '@mui/x-data-grid';
 import { showErrorToast, showSuccessToast } from '../../../../utils/toastNotifications';
-import { useNavigate } from 'react-router-dom';
 import waterLineService from '../services/water-lineService';
 import { DialogActionKey } from '../interfaces/actionTypes.config.interface';
 import FormDialog from '../components/FomDialog';
 import WaterLineTable from '../components/WaterLineTable';
 import { buildWaterLinePayload } from '../mappers/buildWaterLinePayload';
+import { Drawer } from '@mui/material';
+import WaterLineDetailDrawer from '../components/WaterLineDetailDrawer';
 
 const WaterLinePage: React.FC = () => {
     const {
@@ -32,6 +33,8 @@ const WaterLinePage: React.FC = () => {
     const [selectedItem, setSelectedItem] = React.useState<WaterLineRow | null>(null);
     const [isEdit, setIsEdit] = React.useState(false);
     const [reloadKey, setReloadKey] = useState(0);
+    const [selected, setSelected] = useState<WaterLineRow | null>(null);
+    const [openDrawer, setOpenDrawer] = useState(false);
 
     useEffect(() => {
         const t = setTimeout(() => setDebouncedSearch(tableState.search.trim()), 500);
@@ -173,10 +176,9 @@ const WaterLinePage: React.FC = () => {
         }
     };
 
-    const navigate = useNavigate();
-
     const handleDetail = (item: WaterLineRow) => {
-        navigate(`/private/water-lines/detail/${item.id}`);
+        setSelected(item);
+        setOpenDrawer(true);
     };
 
     return (
@@ -207,6 +209,22 @@ const WaterLinePage: React.FC = () => {
                 item={selectedItem ?? undefined}
                 onSubmit={handleFormSubmit}
             />
+            <Drawer
+                anchor="right"
+                open={openDrawer}
+                onClose={() => setOpenDrawer(false)}
+                PaperProps={{ sx: { width: 500 } }}
+                sx={{
+                    zIndex: 2000,
+                }}
+            >
+                {selected && (
+                    <WaterLineDetailDrawer
+                        id={selected.id}
+                        onClose={() => setOpenDrawer(false)}
+                    />
+                )}
+            </Drawer>
         </div>
     );
 };

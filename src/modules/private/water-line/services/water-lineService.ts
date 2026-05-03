@@ -1,7 +1,7 @@
 import { IndexQueryParams } from "../../../../interfaces/shared/index-params.interface";
 import httpRequestService from "../../../../shared/services/api/httpRequestService";
 import { ApiResponse } from "../../../../interfaces/shared/api-response.interface";
-import { WaterLineResponse } from "../interfaces/water-line";
+import { WaterLineResponse, WaterTakeByLineResponse } from "../interfaces/water-line";
 import { ActionsPayload } from "../../../../interfaces/shared/actions.interface";
 import { assertResponseData } from "../../../../utils/assertResponseData";
 import { WaterLinePayload } from "../interfaces/payload.interface";
@@ -63,25 +63,33 @@ class WaterLineService {
     }
 
     async deactivate(payload: ActionsPayload): Promise<boolean> {
-        const endpoint = `${this.url}/deactivate`;
+        const endpoint = `${this.url}/${payload.dataId}/deactivate`;
 
         const response = await httpRequestService.post<null>(
             endpoint,
             payload
         );
 
-        return response.status === 200 || response.status === 201;
+        return response.status === 200;
     }
 
     async activate(payload: ActionsPayload): Promise<boolean> {
-        const endpoint = `${this.url}/activate`;
+        const endpoint = `${this.url}/${payload.dataId}/activate`;
 
         const response = await httpRequestService.post<null>(
             endpoint,
             payload
         );
 
-        return response.status === 200 || response.status === 201;
+        return response.status === 200;
+    }
+
+    async waterTakeByLine(id: number): Promise<WaterTakeByLineResponse> {
+        const endpoint = `${this.url}/${id}/water-takes`;
+
+        const response = await httpRequestService.get<WaterTakeByLineResponse>(endpoint);
+
+        return assertResponseData(response.data, 'WaterLine.waterTakeByLine');
     }
 }
 

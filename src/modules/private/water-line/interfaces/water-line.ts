@@ -9,4 +9,15 @@ export interface WaterLineRow {
     updatedAt: string
 }
 
+export interface WaterTakeRow {
+  id: number
+  uid: string
+  socioName: string
+  dependentsCount: number
+  status: string
+  createdAt: string
+  updatedAt: string
+}
+
 export type WaterLineResponse = IndexResponse<WaterLineRow>;
+export type WaterTakeByLineResponse = IndexResponse<WaterTakeRow>;
