@@ -28,6 +28,7 @@ import LanguageIcon from '@mui/icons-material/Language';
 import { logout } from '../../redux/auth/authSlice';
 import { useDispatch } from 'react-redux';
 import { showSuccessToast } from '../../utils/toastNotifications';
+import OpacityIcon from '@mui/icons-material/Opacity';
 
 const drawerWidth = 240;
 
@@ -131,6 +132,11 @@ const menuItems: MenuItem[] = [
         name: 'Home',
         link: `/dashboard/home`,
         icon: <HomeIcon />
+    },
+    {
+        name: 'Lineas de Agua',
+        link: `/private/water-lines`,
+        icon: <OpacityIcon />
     },
     {
         name: 'Users',
