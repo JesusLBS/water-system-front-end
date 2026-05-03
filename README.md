@@ -4,6 +4,53 @@
 
 Este proyecto es el frontend del sistema **Water System Back (Proyecto de portafolio)**, desarrollado en **React**, diseñado para consumir una API backend construida en Node.js. El objetivo del proyecto es ofrecer una interfaz clara, modular y mantenible para la gestión del sistema, priorizando una correcta integración frontend–backend.
 
+
+## Vista previa
+
+### Login
+<img src="./docs/screenshots/login.png" width="700" style="border-radius:8px; margin-bottom:16px;"/>
+
+### Dashboard / Home
+<img src="./docs/screenshots/home.png" width="700" style="border-radius:8px; margin-bottom:16px;"/>
+
+### Gestión de socios
+<img src="./docs/screenshots/socios.png" width="700" style="border-radius:8px; margin-bottom:16px;"/>
+
+### Detalle de socio
+<img src="./docs/screenshots/detail-socio.png" width="700" style="border-radius:8px; margin-bottom:16px;"/>
+
+### Alta de socio
+<img src="./docs/screenshots/add-socio.png" width="700" style="border-radius:8px; margin-bottom:16px;"/>
+
+### Gestión de usuarios
+<img src="./docs/screenshots/users.png" width="700" style="border-radius:8px; margin-bottom:16px;"/>
+
+### Líneas de agua
+<img src="./docs/screenshots/water-lines.png" width="700" style="border-radius:8px; margin-bottom:16px;"/>
+
+### Detalle línea de agua
+<img src="./docs/screenshots/water-line-detail.png" width="700" style="border-radius:8px; margin-bottom:16px;"/>
+
+### Desactivación de línea
+<img src="./docs/screenshots/deactivate-linea.png" width="700" style="border-radius:8px; margin-bottom:16px;"/>
+
+
+## ¿Qué resuelve este proyecto?
+
+Permite gestionar socios, dependientes y líneas de agua, centralizando la información y facilitando operaciones administrativas mediante formularios estructurados, validaciones robustas y flujos claros de usuario.
+
+
+## Highlights técnicos
+
+- Arquitectura modular basada en dominios (auth, socio, dashboard)
+- Separación clara de responsabilidades: UI / hooks / services / mappers
+- Formularios complejos con Formik + Yup (validación escalable)
+- Consumo desacoplado de API mediante Axios
+- Soporte para mock data configurable por variables de entorno
+- Manejo de estado y side-effects controlado
+- Estructura preparada para escalar (Clean-ish architecture)
+
+
 ### Habilidades y Características:
 
 - **Arquitectura Frontend**:
@@ -29,10 +76,11 @@ Este proyecto es el frontend del sistema **Water System Back (Proyecto de portaf
 
 - React
 - TypeScript
-- JavaScript
-- HTML5
-- CSS3
-- Consumo de APIs REST
+- Vite
+- MUI (Material UI)
+- Formik
+- Yup
+- Axios
 
 ## Estructura principal del repo
 

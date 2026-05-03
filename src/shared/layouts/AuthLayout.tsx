@@ -23,9 +23,10 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, title, toggleTheme, d
 
             <Box
                 sx={{
-                    marginTop: 16,
+                    minHeight: '100vh',
                     display: 'flex',
                     flexDirection: 'column',
+                    justifyContent: 'center',
                     alignItems: 'center',
                 }}
             >
